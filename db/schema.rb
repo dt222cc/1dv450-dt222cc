@@ -14,18 +14,21 @@
 ActiveRecord::Schema.define(version: 20160118183605) do
 
   create_table "api_keys", force: :cascade do |t|
-    t.integer  "user_id",    null: false
-    t.string   "key",        null: false
-    t.datetime "created_at", null: false
-    t.datetime "updated_at", null: false
+    t.integer  "user_id"
+    t.string   "app_name"
+    t.text     "description", limit: 100
+    t.string   "key"
+    t.datetime "created_at",              null: false
+    t.datetime "updated_at",              null: false
   end
 
+  add_index "api_keys", ["user_id"], name: "index_api_keys_on_user_id"
+
   create_table "users", force: :cascade do |t|
-    t.string   "username",        limit: 20, null: false
-    t.string   "email",                      null: false
-    t.string   "password_digest",            null: false
-    t.datetime "created_at",                 null: false
-    t.datetime "updated_at",                 null: false
+    t.string   "email"
+    t.string   "password_digest"
+    t.datetime "created_at",      null: false
+    t.datetime "updated_at",      null: false
   end
 
 end
