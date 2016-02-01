@@ -4,7 +4,6 @@ User profile
 <% content_for :header do %>
 "User dashboard"
 <% end %>
-
 <% if flash.any? %>
     <% flash.each do |message_type, message| %>
         <div class="custom-error alert alert-<%= message_type %>">

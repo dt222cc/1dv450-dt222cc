@@ -8,7 +8,7 @@ html {
 }
 
 body {
-  padding-top: 60px;
+  padding-top: 30px;
 }
 
 section {
@@ -17,4 +17,9 @@ section {
 
 textarea {
   resize: vertical;
+}
+
+.nav-link-right {
+  float: right;
+  margin: 0 5px 0 5px;
 }
