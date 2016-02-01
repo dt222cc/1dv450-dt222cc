@@ -1,38 +1,32 @@
-<div class="page-header">
-    <h1 class="text-center">Register to get your API key</h1>
-</div>
-<div class="well">
-    <% if flash[:notice] %>
-        <div class="notice"><%= flash[:notice] %></div>
-    <% end %>
-    <% if @user.errors.any? %>
-        <ul>
-            <% for message_error in @user.errors.full_messages %>
-                <li><%= message_error %></li>
-            <% end %>
-        </ul>
-    <% end %>
-    <%= form_for @user do |f| %>
-        <div class="form-group">
-            <%= f.label :email, class: "col-sm-2 control-label" %>
-            <div class="col-sm-10">
-                <%= f.text_field :email %>
-            </div>
-        </div>
-        <div class="form-group">
-            <%= f.label :password, class: "col-sm-2 control-label" %>
-            <div class="col-sm-10">
-                <%= f.text_field :password %>
-            </div>
-        </div>
-        <div class="form-group">
-            <%= f.label :password_confirmation, class: "col-sm-2 control-label" %>
-            <div class="col-sm-10">
-                <%= f.text_field :password_confirmation %>
-            </div>
-        </div>
-        <div class="col-sm-offset-2 col-sm-10">
-            <%= f.submit "Register", class: "btn btn-primary" %>
-        </div>
-    <% end %>
+<% content_for :title do %>
+Signup for API-key
+<% end %>
+<% content_for :header do %>
+Register to get your API key
+<% end %>
+
+<% if @user.errors.any? %>
+    <div class="alert alert-danger custom-error" role="alert">
+        <% for message_error in @user.errors.full_messages %>
+            <p><%= message_error %></p>
+        <% end %>
+    </div>
+<% end %>
+
+<div class="row">
+    <div class="col-md-6 col-md-offset-3">
+        <%= form_for @user do |f| %>
+            <%= f.label :email %>
+            <%= f.text_field :email, class: "form-control" %>
+        
+            <%= f.label :password %>
+            <%= f.password_field :password, class: "form-control" %>
+            
+            <%= f.label :password_confirmation %>
+            <%= f.password_field :password_confirmation, class: "form-control" %>
+            
+            <%= f.submit "Register", class: "btn btn-primary margin-top-10" %>
+        <% end %>
+        <p class="margin-top-10">Already registered? <%= link_to "Go to login page", login_path %></p>
+    </div>
 </div>
