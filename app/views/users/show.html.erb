@@ -1,0 +1,21 @@
+<% content_for :title do %>
+User profile
+<% end %>
+<% content_for :header do %>
+"User dashboard"
+<% end %>
+
+<% if flash.any? %>
+    <% flash.each do |message_type, message| %>
+        <div class="custom-error alert alert-<%= message_type %>">
+            <p class="text-center"><%= message %></p>
+        </div>
+    <% end %>
+<% end %>
+
+<p>
+    User email: <%= @user.email %>
+</p>
+<p>TODO: Add applikations and it's API key...</p>
+
+<%= debug @user %>
