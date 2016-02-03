@@ -2,7 +2,6 @@ class UsersController < ApplicationController
     # before_action is a validation callback that protects some of the actions
     before_action :check_user, only: [:show]
   
-    # Shows the signup page for new users
     # GET /signup
     def new
         @user = User.new
@@ -13,7 +12,6 @@ class UsersController < ApplicationController
         end
     end
     
-    # Creates a new user if possible
     # POST /signup
     def create
         @user = User.new(user_params) # using strong parameters (security)
@@ -27,6 +25,7 @@ class UsersController < ApplicationController
         end
     end
     
+    # GET /users/:id
     def show
         @user = User.find(params[:id])
         
@@ -36,7 +35,7 @@ class UsersController < ApplicationController
             redirect_to current_user
         end
     end
-
+    
     private
     def user_params
         params.require(:user).permit(:email, :password, :password_confirmation)

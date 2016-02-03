@@ -1,8 +1,8 @@
 <% content_for :title do %>
-Apply for API-key
+Edit application
 <% end %>
 <% content_for :header do %>
-Add an application to get your API-key
+Update <%= @app.name %>?
 <% end %>
 
 <% if @app.errors.any? %>
@@ -22,7 +22,7 @@ Add an application to get your API-key
             <%= f.label :description %>
             <%= f.text_area :description, class: "form-control" %>
             
-            <%= f.submit "Register", class: "btn btn-primary margin-top-10" %>
+            <%= f.submit "Save changes", class: "btn btn-primary margin-top-10" %>
         <% end %>
         <p class="margin-top-10">Changed your mind? <%= link_to "Go back to the dashboard", current_user %></p>
     </div>
