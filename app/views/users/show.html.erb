@@ -1,44 +1,76 @@
-<% content_for :title do %>
-User profile
-<% end %>
-<% content_for :header do %>
-"User dashboard"
-<% end %>
-
-<% if flash.any? %>
-    <% flash.each do |message_type, message| %>
-        <div class="custom-error alert alert-<%= message_type %>">
-            <p class="text-center"><%= message %></p>
+<% if !is_admin %>
+    <% content_for :title do %>
+        User profile
+    <% end %>
+    <% content_for :header do %>
+        "User dashboard"
+    <% end %>
+        
+    <% if flash.any? %>
+        <% flash.each do |message_type, message| %>
+            <div class="custom-box alert alert-<%= message_type %>">
+                <p class="text-center"><%= message %></p>
+            </div>
+        <% end %>
+    <% end %>
+    
+    <% if @user.apps.any? %>
+        <div class="user-apps">
+            <h3 class="text-center">Your applications</h3>
+            <% @user.apps.each do |app| %>
+                <div class="custom-box alert alert-info">
+                    <p><span class="fixed-span">Name </span><%= app.name %></p>
+                    <p><span class="fixed-span">Description </span><%= app.description %></p>
+                    <p><span class="fixed-span">API key </span><%= app.key %></p>
+                    <div class="app-links">
+                        <%= link_to 'Delete', app_path(app), method: :delete, data: { confirm: 'Are you sure?' }, class: "nav-link-right"  %>
+                        <%= link_to 'Edit', edit_app_path(app), class: "nav-link-right"  %>
+                    </div>
+                </div>
+            <% end %>
+        </div>
+    <% else %>
+        <div class="text-center alert alert-info">
+            <p>You have no registered applications, yet.</p>
+        </div>
+    <% end %>
+    
+    <div class="custom-box text-center alert alert-info">
+        <%= link_to "Register a new application", new_app_path %>
+    </div>
+<% else %>
+    <% content_for :title do %>
+        Admin interface
+    <% end %>
+    <% content_for :header do %>
+        Admin interface
+    <% end %>
+        
+    <% if flash.any? %>
+        <% flash.each do |message_type, message| %>
+            <div class="custom-box alert alert-<%= message_type %>">
+                <p class="text-center"><%= message %></p>
+            </div>
+        <% end %>
+    <% end %>
+    
+    <% if @apps.any?%>
+        <div class="user-apps">
+            <h3 class="text-center">All applications</h3>
+            <% @apps.each do |app| %>
+                <div class="custom-box alert alert-info">
+                    <p><span class="app-span">Owner </span><%= app.user.email %></p>
+                    <p><span class="app-span">Application </span><%= app.name %></p>
+                    <div class="app-links">
+                        <%= link_to 'Delete', app_path(app), method: :delete, data: { confirm: 'Are you sure?' }, class: "nav-link-right"  %>
+                        <%= link_to 'Edit', edit_app_path(app), class: "nav-link-right"  %>
+                    </div>
+                </div>
+            <% end %>
+        </div>
+    <% else %>
+        <div class="text-center alert alert-info">
+            <p>There is no registered applications, yet.</p>
         </div>
     <% end %>
 <% end %>
-
-<% if @user.apps.any? %>
-    <div class="user-apps">
-        <h3 class="text-center">Your applications</h3>
-        <% @user.apps.each do |app| %>
-            <div class="custom-error alert alert-info">
-                <p><span class="app-span">Name </span><%= app.name %></p>
-                <p><span class="app-span">Description </span><%= app.description %></p>
-                <p><span class="app-span">API key </span><%= app.key %></p>
-                <div class="app-links">
-                    <%= link_to 'Delete', app_path(app), method: :delete, data: { confirm: 'Are you sure?' }, class: "nav-link-right"  %>
-                    <%= link_to 'Edit', edit_app_path(app), class: "nav-link-right"  %>
-                </div>
-            </div>
-        <% end %>
-    </div>
-<% else %>
-    <div class="text-center alert alert-info">
-        <p>You have no registered applications, yet.</p>
-    </div>
-<% end %>
-
-<div class="custom-error text-center alert alert-info">
-    <%= link_to "Register a new application", new_app_path %>
-</div>
-
-<div class="custom-error text-center alert alert-danger">
-    <p class="text-center">TODO</p>
-    <p class="text-center">Admin interface, gonna hard code it...</p>
-</div>

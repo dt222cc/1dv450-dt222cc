@@ -11,7 +11,7 @@
   <div class="container">
     <% # Display this if user is logged in %>
     <% if is_logged_in? %>
-        <div class="alert alert-info" role="alert">
+        <div class="custom-box alert alert-info" role="alert">
             Logged in as <%= current_user.email %>
             <%= link_to "Log out", logout_path, class: "nav-link-right" %>
             <%= link_to "New app", new_app_path, class: "nav-link-right" %>
@@ -24,8 +24,6 @@
         <h1 class="text-center"><%= yield(:header) %></h1>
     </div>
     <%= yield %>
-    <% # Display debug information on development enviroment %>
-    <%= debug(params) if Rails.env.development? %>
   </div>
 </body>
 </html>
