@@ -1,10 +1,10 @@
 class SessionsController < ApplicationController
     
     def new
-        # loads the login-form from the view sessions/new.html.erb
+        # Loads the login-form from the view sessions/new.html.erb
         
+        # Redirect back to user dashboard if the user tries to visit the login page (also the root page)
         if is_logged_in?
-            flash[:info] = "You want to login when you're already logged in?!? NO! NOT HAPPENING!"
             redirect_to current_user
         end
     end

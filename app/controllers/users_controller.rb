@@ -7,8 +7,8 @@ class UsersController < ApplicationController
     def new
         @user = User.new
         
+        # Redirect back to user dashboard if the user tries to visit the signup page
         if is_logged_in?
-            flash[:info] = "Sign up!? Do logout if you want to register another email..."
             redirect_to current_user
         end
     end
@@ -30,8 +30,9 @@ class UsersController < ApplicationController
     def show
         @user = User.find(params[:id])
         
+        # Prevents access to other users, ful hack? :D
         if current_user != @user
-            flash[:info] = "You have no access to that page -.-"
+            # flash[:info] = "You have no access to that page -.-"
             redirect_to current_user
         end
     end
