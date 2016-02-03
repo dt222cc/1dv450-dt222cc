@@ -6,7 +6,7 @@ Register your application to get an API key associated with it
 <% end %>
 
 <% if @user.errors.any? %>
-    <div class="alert alert-danger custom-error" role="alert">
+    <div class="alert alert-danger custom-box" role="alert">
         <% for message_error in @user.errors.full_messages %>
             <p><%= message_error %></p>
         <% end %>

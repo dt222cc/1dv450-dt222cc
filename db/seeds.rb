@@ -2,7 +2,7 @@
 # The data can then be loaded with the rake db:seed (or created alongside the db with db:setup).
 
 # Admin
-User.create(email: 'admin@123.com', password: 'password', password_confirmation: 'password')
+User.create(email: 'admin@123.se', password: 'password', password_confirmation: 'password')
 
 # User with two apps
 u = User.create(email: '123@123.se', password: '123123', password_confirmation: '123123')

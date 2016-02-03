@@ -20,6 +20,11 @@ module SessionsHelper
        !current_user.nil?
     end
     
+    # Returns true if current_user is admin
+    def is_admin
+        current_user.email == "admin@123.se"
+    end
+    
     # Protection, must be logged in
     def check_user
         unless is_logged_in?
@@ -27,4 +32,5 @@ module SessionsHelper
             redirect_to login_path
         end
     end
+    
 end

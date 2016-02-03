@@ -7,7 +7,7 @@ Welcome, do you want to login?
 
 <% if flash.any? %>
     <% flash.each do |message_type, message| %>
-        <div class="custom-error alert alert-<%= message_type %>">
+        <div class="custom-box alert alert-<%= message_type %>">
             <p class="text-center"><%= message %></p>
         </div>
     <% end %>
@@ -29,8 +29,11 @@ Welcome, do you want to login?
 </div>
 
 <div class="row">
-    <div class="col-md-6 col-md-offset-3">
-        <h2>Test accounts</h2>
-        <p>Email: 123@123.se, Password: 123123</p>
+    <div class="custom-box alert alert-info">
+        <h3>Test accounts</h3>
+        <p><span class="fixed-span-2">Admin: </span>admin@123.se<br><span class="fixed-span-2"></span>password</p>
+        <p><span class="fixed-span-2">User: </span>123@123.se<br><span class="fixed-span-2"></span>123123</p>
+        <p><span class="fixed-span-2">User2: </span>111@111.se<br><span class="fixed-span-2"></span>111111</p>
+        <p><span class="fixed-span-2">User3: </span>222@222.se<br><span class="fixed-span-2"></span>222222</p>
     </div>
 </div>

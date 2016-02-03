@@ -28,9 +28,9 @@ class UsersController < ApplicationController
     # GET /users/:id
     def show
         @user = User.find(params[:id])
-        
+        @apps = App.all # Admin interface
         # Prevents access to other users, ful hack? :D
-        if current_user != @user
+        if current_user != @user and !is_admin
             # flash[:info] = "You have no access to that page -.-"
             redirect_to current_user
         end
