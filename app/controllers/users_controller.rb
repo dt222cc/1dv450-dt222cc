@@ -2,18 +2,16 @@ class UsersController < ApplicationController
     # before_action is a validation callback that protects some of the actions
     before_action :check_user, only: [:show]
   
-    # Shows the signup page for new users
     # GET /signup
     def new
         @user = User.new
         
+        # Redirect back to user dashboard if the user tries to visit the signup page
         if is_logged_in?
-            flash[:info] = "Sign up!? Do logout if you want to register another email..."
             redirect_to current_user
         end
     end
     
-    # Creates a new user if possible
     # POST /signup
     def create
         @user = User.new(user_params) # using strong parameters (security)
@@ -27,15 +25,17 @@ class UsersController < ApplicationController
         end
     end
     
+    # GET /users/:id
     def show
         @user = User.find(params[:id])
         
+        # Prevents access to other users, ful hack? :D
         if current_user != @user
-            flash[:info] = "You have no access to that page -.-"
+            # flash[:info] = "You have no access to that page -.-"
             redirect_to current_user
         end
     end
-
+    
     private
     def user_params
         params.require(:user).permit(:email, :password, :password_confirmation)

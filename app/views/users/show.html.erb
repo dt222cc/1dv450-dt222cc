@@ -18,11 +18,13 @@ User profile
         <h3 class="text-center">Your applications</h3>
         <% @user.apps.each do |app| %>
             <div class="custom-error alert alert-info">
-                <p><span class="app-span">Name</span><%= app.name %></p>
-                <p><span class="app-span">Description</span><%= app.description %></p>
-                <p><span class="app-span">API key</span><%= app.key %></p>
-                <p>Edit</p>
-                <p>Delete</p>
+                <p><span class="app-span">Name </span><%= app.name %></p>
+                <p><span class="app-span">Description </span><%= app.description %></p>
+                <p><span class="app-span">API key </span><%= app.key %></p>
+                <div class="app-links">
+                    <%= link_to 'Delete', app_path(app), method: :delete, data: { confirm: 'Are you sure?' }, class: "nav-link-right"  %>
+                    <%= link_to 'Edit', edit_app_path(app), class: "nav-link-right"  %>
+                </div>
             </div>
         <% end %>
     </div>
@@ -33,11 +35,10 @@ User profile
 <% end %>
 
 <div class="custom-error text-center alert alert-info">
-    <%= link_to "Register a new application", @user %>
+    <%= link_to "Register a new application", new_app_path %>
 </div>
 
 <div class="custom-error text-center alert alert-danger">
     <p class="text-center">TODO</p>
-    <p class="text-center">Register new application</p>
-    <p class="text-center">Edit and Delete applications</p>
+    <p class="text-center">Admin interface, gonna hard code it...</p>
 </div>
