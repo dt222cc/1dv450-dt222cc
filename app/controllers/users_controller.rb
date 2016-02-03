@@ -8,7 +8,7 @@ class UsersController < ApplicationController
         @user = User.new
         
         if is_logged_in?
-            flash[:info] = "Sign up? You are already logged in."
+            flash[:info] = "Sign up!? Do logout if you want to register another email..."
             redirect_to current_user
         end
     end

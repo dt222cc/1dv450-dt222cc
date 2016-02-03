@@ -12,9 +12,9 @@
     <% # Display this if user is logged in %>
     <% if is_logged_in? %>
         <div class="alert alert-info" role="alert">
-            Logged in as <%= current_user.email %>, Go to <%= link_to "Dashboard", current_user %>
+            Logged in as <%= current_user.email %><%= link_to "Log out", logout_path, class: "nav-link-right" %><%= link_to "Dashboard", current_user, class: "nav-link-right" %> 
         </div>
-        <%= link_to "Log out", logout_path %>
+        
     <% end %>
     <% # Each page has its own header %>
     <div class="page-header">

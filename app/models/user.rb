@@ -1,6 +1,6 @@
 class User < ActiveRecord::Base
     # A user has many apikeys/applications and theses gets destroyed with the user on a user deletion
-	has_many :api_keys, dependent: :destroy
+	has_many :apps, dependent: :destroy
     
     # Lowercase email before saving to db
     before_save { self.email = email.downcase }

@@ -1,6 +1,6 @@
 Rails.application.routes.draw do
   
-  root:to => redirect('/login')
+  root:to => redirect('login')
   
   get 'login' => 'sessions#new'
   post 'login' => 'sessions#create'

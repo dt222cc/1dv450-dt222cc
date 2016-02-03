@@ -12,17 +12,21 @@ class SessionsController < ApplicationController
     # Attempt a login
     def create
         # Retrieve the user by mail
-        @user = User.find_by(email: params[:session][:email].downcase)
+        user = User.find_by(email: params[:session][:email].downcase)
         
         # Checks if we got a user first and then if the password is correct
-        if @user && @user.authenticate(params[:session][:password])
+        if user && user.authenticate(params[:session][:password])
             # Log the user in and redirect to the user page
-            log_in @user # helpers/sessions_helper
-            redirect_to @user
+            log_in user # helpers/sessions_helper
+            redirect_to user
         else
             # Creates an error message and render the layout with the form
-            # flash.now is for rendering (lives for the cycle), danger = bootstrap
-            flash.now[:danger] = 'Invalid email/password combination'
+            # flash.now is for rendering (lives for the cycle), danger: css class for bootstrap
+            if !user
+                flash.now[:danger] = 'User/email does not exists'
+            else
+                flash.now[:danger] = 'Invalid email/password combination'
+            end
             render 'new'
         end
     end
