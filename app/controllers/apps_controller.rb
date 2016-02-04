@@ -1,5 +1,5 @@
 class AppsController < ApplicationController
-    before_action :check_user
+    before_action :check_user, except: [:new, :create]
     
     # GET /apps/:id
     def new
