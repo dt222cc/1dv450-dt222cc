@@ -1,0 +1,7 @@
+<% if flash.any? %>
+    <% flash.each do |message_type, message| %>
+        <div class="custom-box alert alert-<%= message_type %>">
+            <p class="text-center"><%= message %></p>
+        </div>
+    <% end %>
+<% end %>

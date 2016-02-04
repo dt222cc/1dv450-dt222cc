@@ -1,17 +1,6 @@
-<% content_for :title do %>
-Welcome - Login
-<% end %>
-<% content_for :header do %>
-Welcome, do you want to login?
-<% end %>
-
-<% if flash.any? %>
-    <% flash.each do |message_type, message| %>
-        <div class="custom-box alert alert-<%= message_type %>">
-            <p class="text-center"><%= message %></p>
-        </div>
-    <% end %>
-<% end %>
+<% content_for :title, "Welcome - Login" %>
+<% content_for :header, "Welcome, do you want to login?" %>
+<%= render 'layouts/flash' %>
 
 <div class="row">
     <div class="col-md-6 col-md-offset-3">

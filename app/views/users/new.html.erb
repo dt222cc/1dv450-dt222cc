@@ -1,17 +1,6 @@
-<% content_for :title do %>
-Signup for API-key
-<% end %>
-<% content_for :header do %>
-Register your application to get an API key associated with it
-<% end %>
-
-<% if @user.errors.any? %>
-    <div class="alert alert-danger custom-box" role="alert">
-        <% for message_error in @user.errors.full_messages %>
-            <p><%= message_error %></p>
-        <% end %>
-    </div>
-<% end %>
+<% content_for :title, "Signup for API-key" %>
+<% content_for :header, "Register your application to get an API key associated with it" %>
+<%= render 'layouts/errors' %>
 
 <div class="row">
     <div class="col-md-6 col-md-offset-3">

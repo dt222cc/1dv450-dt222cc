@@ -1,17 +1,8 @@
-<% content_for :title do %>
-Edit application
-<% end %>
+<% content_for :title, "Edit application" %>
 <% content_for :header do %>
-Update <%= @app.name %>?
+    Update <%= @app.name %>
 <% end %>
-
-<% if @app.errors.any? %>
-    <div class="alert alert-danger custom-box" role="alert">
-        <% for message_error in @app.errors.full_messages %>
-            <p><%= message_error %></p>
-        <% end %>
-    </div>
-<% end %>
+<%= render 'layouts/errors' %>
 
 <div class="row">
     <div class="col-md-6 col-md-offset-3">
