@@ -1,7 +1,7 @@
 # 1DV450 Registration App
 - Author: Sing Trinh (dt222cc)
-- [Service](https://coursepress.lnu.se/kurs/webbramverk/tjansten-toerh/)
-- [Running app](https://c9-1dv450-dt222cc-registrationapp-dt222cc.c9users.io/) *Might not be up
+- [Overview](https://coursepress.lnu.se/kurs/webbramverk/tjansten-toerh/)
+- [Task](https://coursepress.lnu.se/kurs/webbramverk/registreringsapplikation/)
 
 ## Part 1 of 3
 An application where a developer can register their applications and thus obtain API-key/-keys used by the requests against the API (Part 2)
