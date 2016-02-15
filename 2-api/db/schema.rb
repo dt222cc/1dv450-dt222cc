@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20160203073510) do
+ActiveRecord::Schema.define(version: 20160215190652) do
 
   create_table "apps", force: :cascade do |t|
     t.integer  "user_id"
@@ -23,6 +23,36 @@ ActiveRecord::Schema.define(version: 20160203073510) do
   end
 
   add_index "apps", ["user_id"], name: "index_apps_on_user_id"
+
+  create_table "creators", force: :cascade do |t|
+    t.string   "email",                      null: false
+    t.string   "displayname",     limit: 30, null: false
+    t.string   "password_digest",            null: false
+    t.datetime "created_at",                 null: false
+    t.datetime "updated_at",                 null: false
+  end
+
+  create_table "events", force: :cascade do |t|
+    t.string   "name",        limit: 30,  null: false
+    t.text     "description", limit: 100, null: false
+    t.datetime "created_at",              null: false
+    t.datetime "updated_at",              null: false
+  end
+
+  create_table "positions", force: :cascade do |t|
+    t.float    "longitude",  null: false
+    t.float    "latitude",   null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+  end
+
+  create_table "tags", force: :cascade do |t|
+    t.string   "name",       limit: 30, null: false
+    t.datetime "created_at",            null: false
+    t.datetime "updated_at",            null: false
+  end
+
+  add_index "tags", ["name"], name: "index_tags_on_name"
 
   create_table "users", force: :cascade do |t|
     t.string   "email",           null: false
