@@ -1,0 +1,9 @@
+<% @app ? @obj = @app : @obj = @user %>
+
+<% if @obj.errors.any? %>
+    <div class="alert alert-danger custom-box" role="alert">
+        <% for message_error in @obj.errors.full_messages %>
+            <p><%= message_error %></p>
+        <% end %>
+    </div>
+<% end %>

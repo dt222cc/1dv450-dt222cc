@@ -1,0 +1,28 @@
+<% content_for :title, "Welcome - Login" %>
+<% content_for :header, "Welcome, do you want to login?" %>
+<%= render 'layouts/flash' %>
+
+<div class="row">
+    <div class="col-md-6 col-md-offset-3">
+        <%= form_for(:session, url: login_path) do |f| %>
+            <%= f.label :email %>
+            <%= f.email_field :email, required: true, class: "form-control" %>
+
+            <%= f.label :password %>
+            <%= f.password_field :password, required: true, class: "form-control" %>
+
+            <%= f.submit "Log in", class: "btn btn-primary margin-top-10" %>
+        <% end %>
+        <p class="margin-top-10">New user? <%= link_to "Sign up now!", signup_path %></p>
+    </div>
+</div>
+
+<div class="row">
+    <div class="custom-box alert alert-info">
+        <h3>Test accounts</h3>
+        <p><span class="fixed-span-2">Admin: </span>admin@123.se<br><span class="fixed-span-2"></span>password</p>
+        <p><span class="fixed-span-2">User: </span>123@123.se<br><span class="fixed-span-2"></span>123123</p>
+        <p><span class="fixed-span-2">User2: </span>111@111.se<br><span class="fixed-span-2"></span>111111</p>
+        <p><span class="fixed-span-2">User3: </span>222@222.se<br><span class="fixed-span-2"></span>222222</p>
+    </div>
+</div>

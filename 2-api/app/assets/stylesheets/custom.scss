@@ -1,0 +1,31 @@
+@import "bootstrap-sprockets";
+@import "bootstrap";
+
+/* Universal */
+
+html { overflow-y: scroll; }
+body { padding-top: 30px; }
+section { overflow: auto; }
+textarea { resize: vertical; }
+
+.margin-top-10 { margin-top: 10px; }
+
+.fixed-span   { display: inline-block; width: 100px; }
+.fixed-span-2 { display: inline-block; width: 60px;  }
+
+.nav-link-right {
+  float: right;
+  margin: 0 5px 0 5px;
+}
+
+.custom-box {
+    max-width: 555px;
+    margin: auto;
+    margin-bottom: 10px;
+    h3 { margin-top: 0; }
+}
+
+.app-links {
+    height: 16px;
+    margin-right: -5px;
+}

@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <% # Each page has its own title %>
+    <title><%= yield(:title) %></title>
+    <%= stylesheet_link_tag    'application', media: 'all', 'data-turbolinks-track' => true %>
+    <%= javascript_include_tag 'application', 'data-turbolinks-track' => true %>
+    <%= csrf_meta_tags %>
+</head>
+<body>
+  <div class="container">
+    <% # Display navbar if user is logged in %>
+    <% if is_logged_in? %>
+        <div class="custom-box alert alert-info" role="alert">
+            Logged in as <%= current_user.email %>
+            <%= link_to "Log out", logout_path, data: {no_turbolink: true}, class: "nav-link-right" %>
+            <% if !is_admin %>
+                <%= link_to "New app", new_app_path, class: "nav-link-right" %>
+            <% end %>
+            <%= link_to "Dashboard", current_user, class: "nav-link-right" %>
+        </div>
+    <% end %>
+    <% # Each page has its own header %>
+    <div class="page-header">
+        <h1 class="text-center"><%= yield(:header) %></h1>
+    </div>
+    <%= yield %>
+  </div>
+</body>
+</html>
