@@ -7,7 +7,7 @@ class Creator < ActiveRecord::Base
 
   # Validates username and email for presence, email format for the email
   # Validates the uniqueness only on creation, also not case sensitive
-  validates :username, presence: true
+  validates :displayname, presence: true
   validates :email, presence: true, format: { with: /\A([^@\s]+)@((?:[-a-z0-9]+\.)+[a-z]{2,})\z/ }
   validates :email, uniqueness: { case_sensitive: false }, on: :create
 
