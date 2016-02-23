@@ -1,7 +1,7 @@
 class Api::V1::TagsController < ApplicationController
   before_action :restrict_access
 
-  # GET /api/tags
+  # GET /api/v1/tags
   def index
     tags = Tag.all
 
@@ -12,7 +12,7 @@ class Api::V1::TagsController < ApplicationController
     end
   end
 
-  #GET /api/tags/:id
+  #GET /api/v1/tags/:id
   def show
     #find_by_id() to avoid the exception caused by Tag.find() if tag was not found
     tag = Tag.find_by_id(params[:id])

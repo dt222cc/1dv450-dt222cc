@@ -1,7 +1,7 @@
 class Api::V1::CreatorsController < ApplicationController
   before_action :restrict_access
 
-  # GET /api/creators
+  # GET /api/v1/creators
   def index
     creators = Creator.all
 
@@ -12,7 +12,7 @@ class Api::V1::CreatorsController < ApplicationController
     end
   end
 
-  #GET /api/creators/:id
+  #GET /api/v1/creators/:id
   def show
     #find_by_id() to avoid the exception caused by Creator.find() if tag was not found
     creator = Creator.find_by_id(params[:id])

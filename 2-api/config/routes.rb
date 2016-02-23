@@ -14,10 +14,9 @@ Rails.application.routes.draw do
   resources :users
   resources :apps
 
-  # Source: http://railscasts.com/episodes/350-rest-api-versioning
   # Resource route for api, within namespaces
   namespace :api, defaults: {format: 'json'}  do
-    scope module: :v1, constrains: ApiConstraints.new(version: 1, default: true) do
+    namespace :v1 do
       resources :creators, :events, :positions, :tags
     end
   end

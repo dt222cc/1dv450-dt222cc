@@ -1,7 +1,7 @@
 class Api::V1::PositionsController < ApplicationController
   before_action :restrict_access
 
-  # GET /api/positions
+  # GET /api/v1/positions
   def index
     positions = Position.all
 
@@ -12,7 +12,7 @@ class Api::V1::PositionsController < ApplicationController
     end
   end
 
-  #GET /api/positions/:id
+  #GET /api/v1/positions/:id
   def show
     #find_by_id() to avoid the exception caused by Position.find() if position was not found
     position = Position.find_by_id(params[:id])

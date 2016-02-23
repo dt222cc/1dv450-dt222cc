@@ -1,7 +1,7 @@
 class Api::V1::EventsController < ApplicationController
   before_action :restrict_access
 
-  # GET /api/events
+  # GET /api/v1/events
   def index
     events = Event.all
 
@@ -12,7 +12,7 @@ class Api::V1::EventsController < ApplicationController
     end
   end
 
-  #GET /api/events/:id
+  #GET /api/v1/events/:id
   def show
     #find_by_id() to avoid the exception caused by Event.find() if event was not found
     event = Event.find_by_id(params[:id])
