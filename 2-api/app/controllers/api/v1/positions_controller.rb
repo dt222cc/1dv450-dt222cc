@@ -1,4 +1,6 @@
 class Api::V1::PositionsController < ApplicationController
+  before_action :restrict_access
+
   # GET /api/positions
   def index
     positions = Position.all

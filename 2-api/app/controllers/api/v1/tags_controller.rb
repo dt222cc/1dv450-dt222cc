@@ -1,4 +1,6 @@
 class Api::V1::TagsController < ApplicationController
+  before_action :restrict_access
+
   # GET /api/tags
   def index
     tags = Tag.all

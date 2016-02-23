@@ -1,4 +1,6 @@
 class Api::V1::EventsController < ApplicationController
+  before_action :restrict_access
+
   # GET /api/events
   def index
     events = Event.all
