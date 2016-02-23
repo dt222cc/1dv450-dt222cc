@@ -1,5 +1,3 @@
-require 'api_constraints'
-
 Rails.application.routes.draw do
   # Redirect root: '/' to the login page
   root:to => redirect('login')

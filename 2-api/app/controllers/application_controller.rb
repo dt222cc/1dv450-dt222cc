@@ -15,18 +15,4 @@ class ApplicationController < ActionController::Base
     response.headers["Pragma"] = "no-cache"
     response.headers["Expires"] = "Fri, 09 Jan 2004 00:00:00 GMT"
   end
-
-  # Source: http://railscasts.com/episodes/352-securing-an-api
-  # User/developer must provide ApiKey for access
-  # Example: /api/events?access_token=BniT_MXQ70EfFFMw3kRHSw
-  def restrict_access
-    # authenticate_or_request_with_http_token do |token, options|
-    #   App.exists?(key: token)
-    # end
-
-    # Because above solution did not work
-    unless App.exists?(key: params[:access_token])
-      render json: { error: "API-key invalid. Access denied." }, status: :unauthorized
-    end
-  end
 end
