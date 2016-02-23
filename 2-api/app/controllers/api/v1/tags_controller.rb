@@ -30,15 +30,10 @@ class Api::V1::TagsController < Api::V1::ApiController
     if (params.has_key?(:name))
       tag = Tag.new(params.permit(:name))
 
-      # Save if tag does not exists
-      if Tag.find_by_name(tag.name).nil?
-        if tag.save
-          render json: tag, status: :created
-        else
-          render json: tag.errors.messages, status: :bad_request # If something odd happens
-        end
+      if tag.save
+        render json: tag, status: :created
       else
-        render json: { error: 'This tag already exists' }, status: :conflict
+        render json: tag.errors.messages, status: :unprocessable_entity # or bad_request
       end
     else
       render json: { error: 'Param for tag name is missing: ?name=tagName' }, status: :bad_request
