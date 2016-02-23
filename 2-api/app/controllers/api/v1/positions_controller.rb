@@ -25,7 +25,7 @@ class Api::V1::PositionsController < Api::V1::ApiController
   end
 
   # POST /api/v1/positions
-  # Handle request in wrong format, must be numeric, not duplicate
+  # Handle request in wrong format, not duplicate (lat and lng combination)
   def create
     begin
       position = params.require(:position).permit(:latitude, :longitude)
@@ -33,20 +33,14 @@ class Api::V1::PositionsController < Api::V1::ApiController
       render json: { error: 'Wrong format', position: { latitude: 'integer', longitude: 'integer' } }, status: :bad_request and return
     end
 
-    if !(numeric?(position['latitude']) && numeric?(position['longitude']))
-      render json: { error: 'Not numeric!'}, status: :bad_request
+    position = Position.new(position)
+    exists = Position.find_by_latitude_and_longitude(position.latitude, position.longitude)
+    if exists
+      render json: { error: 'Position already exists', position: exists}, status: :conflict
+    elsif position.save
+      render json: position, status: :created
     else
-      position = Position.new(position)
-      exists = Position.find_by_latitude_and_longitude(position.latitude, position.longitude)
-      if exists
-        render json: { error: 'Position already exists', position: exists}, status: :conflict
-      elsif position.save
-        render json: position, status: :created
-      else
-        render json: position.errors.messages, status: :unprocessable_entity # If something odd happens
-        # render json: position.errors, status: :unprocessable_entity
-        # render json: { errors: 'Unexpected error occured, contact support' }, status: :unprocessable_entity
-      end
+      render json: position.errors.messages, status: :unprocessable_entity # or bad_request
     end
   end
 
