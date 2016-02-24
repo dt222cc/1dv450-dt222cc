@@ -53,7 +53,7 @@ class Api::V1::EventsController < Api::V1::ApiController
         if _tag.nil?
           _tag = Tag.new(tag)
           if !_tag.save
-            render json: _tag.errors.messages, status: :unprocessable_entity and return
+            render json: { errors: _tag.errors.messages }, status: :unprocessable_entity and return
           end
         end
         event.tags << _tag # Add tag to the event
@@ -65,7 +65,7 @@ class Api::V1::EventsController < Api::V1::ApiController
     if position.nil?
       position = Position.new(event_params[:position])
       if !position.save
-        render json: position.errors.messages, status: :unprocessable_entity and return
+        render json: { errors: position.errors.messages }, status: :unprocessable_entity and return
       end
     end
 
@@ -77,7 +77,7 @@ class Api::V1::EventsController < Api::V1::ApiController
     if event.save
       render json: event, status: :created
     else
-      render json: event.errors.messages, status: :unprocessable_entity
+      render json: { errors: event.errors.messages }, status: :unprocessable_entity
     end
   end
 
@@ -110,26 +110,5 @@ class Api::V1::EventsController < Api::V1::ApiController
   # Permit event obj with allowed fields
   def event_params
     params.require(:event).permit(:name, :description, tags: [:name], position: [:longitude, :latitude])
-  end
-
-  # Check credentials from the header and try to authenticate, true if all goes fine else 400
-  def check_authorization
-    require 'base64' # Decode Basic Auth, Postman: Basic dXNlc3JAb25lLnNlOnVzZXJvbmU=
-
-    # Split, keep second part then decode and then split again
-    credentials = Base64.decode64(request.headers['Authorization'].split[1])
-    # => ["email:password"]
-    credentials = credentials.split(':')
-    # => ["email", "password"]
-
-    # Get the creator by email
-    @current_creator = Creator.find_by(email: credentials[0].downcase)
-
-    # If nil and not able to authenticate with the password, return forbidden 403
-    unless @current_creator && @current_creator.authenticate(credentials[1])
-      render json: { error: 'Not authorized! Wrong credentials!'}, status: :forbidden
-    end
-
-    # Else true and keep on with the action..
   end
 end
