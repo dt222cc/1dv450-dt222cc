@@ -38,10 +38,10 @@ e2 = Event.create(name: 'Shops? Food?', description: 'Perhaps places where you c
 e3 = Event.create(name: 'Just events?', description: 'Events, celebrations, incidents, occurrences, experiences')
 e4 = Event.create(name: 'What is this?', description: 'Ice and snow')
 
-# Add some Tags
-t1 = Tag.create(name: 'Har inte bestämt tema ännu')
-t2 = Tag.create(name: 'Hmm.. hm...')
-t3 = Tag.create(name: 'Test')
+# Add some Tags, lowercase
+t1 = Tag.create(name: 'tag1')
+t2 = Tag.create(name: 'tag2')
+t3 = Tag.create(name: 'tag3')
 
 # Add tags to events
 e1.tags << t1
