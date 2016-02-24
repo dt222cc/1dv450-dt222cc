@@ -32,8 +32,8 @@ class Api::V1::EventsController < Api::V1::ApiController
       event = Event.new(event_params.except(:tags, :position))
       position = Position.new(event_params[:position])
     rescue
-      # Friendly error response, should contain event obj. Helper method /api_controller.rb
-      render json: render_param_response, status: :unprocessable_entity and return
+      # Friendly error response, should contain event obj.
+      render json: event_param_error_response, status: :unprocessable_entity and return
     end
 
     # Create tags if present in request and if "new" or use existing tags.
@@ -94,13 +94,12 @@ class Api::V1::EventsController < Api::V1::ApiController
 
   # PUT /api/v1/events/:id
   # Tried to do the hash update, couldn't get it to work...
-  # Helper methods from /api_controller.rb
   def update
     begin
       eventParams = event_params
     rescue
-      # Friendly error response, should contain event obj. Helper method /api_controller.rb
-      render json: render_param_response, status: :unprocessable_entity and return
+      # Friendly error response, should contain event obj.
+      render json: event_param_error_response, status: :unprocessable_entity and return
     end
     if !event = Event.find_by_id(params[:id])
       render json: { errors: 'Event was not found. Aborted action. Correct Id?' }, status: :not_found and return
@@ -150,5 +149,17 @@ class Api::V1::EventsController < Api::V1::ApiController
   private
   def event_params
     params.require(:event).permit(:name, :description, tags: [:name], position: [:longitude, :latitude])
+  end
+
+  def event_param_error_response
+    return {
+      error: 'Parse error: check spelling, etc. Event obj required.',
+      event: {
+        name: 'string, required',
+        description: 'string, required',
+        position: { latitude: 'integer, required', longitude: 'integer, required'},
+        tags: [ { name: 'optional' }, { name: 'optional' } ]
+      },
+    }
   end
 end
