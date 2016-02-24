@@ -15,7 +15,6 @@ class Api::V1::EventsController < Api::V1::ApiController
 
   #GET /api/v1/events/:id
   def show
-    #find_by_id() to avoid the exception caused by Event.find() if event was not found
     event = Event.find_by_id(params[:id])
 
     if tag.nil?
@@ -26,11 +25,10 @@ class Api::V1::EventsController < Api::V1::ApiController
   end
 
   # POST /api/v1/events
-  # Create event to current creator
-  # Only if authentication passed
+  # Creates an event to current creator, only if authentication passed
   # Tried to covert some parts to helper method for reuseability, issues with the render json part
   def create
-    begin # Initialize and check if "event" cannot be found > error
+    begin # Initialize and check if "event" can be found in the request
       event = Event.new(event_params.except(:tags, :position))
       position = Position.new(event_params[:position])
     rescue
@@ -82,13 +80,11 @@ class Api::V1::EventsController < Api::V1::ApiController
       if position.events.size == 1
         position.destroy
       end
-
       event.tags.each do |tag|
         if tag.events.size == 1
           tag.destroy
         end
       end
-
       event.destroy
       head :no_content
     else
@@ -98,7 +94,7 @@ class Api::V1::EventsController < Api::V1::ApiController
 
   # PUT /api/v1/events/:id
   # Tried to do the hash update, couldn't get it to work...
-  # # Helper methods from /api_controller.rb
+  # Helper methods from /api_controller.rb
   def update
     begin
       eventParams = event_params
@@ -110,7 +106,9 @@ class Api::V1::EventsController < Api::V1::ApiController
       render json: { errors: 'Event was not found. Aborted action. Correct Id?' }, status: :not_found and return
     end
 
-    # Process position, meh DRY, couldnt work around render json: ... "and return"
+    # Process position. DRY, I know.
+    # Can refactor this and tags below but i lose the response for error message.
+    # Couldnt work around render json: ... "and return"
     position = Position.where(event_params[:position])[0]
     if position.nil?
       position = Position.new(event_params[:position])
@@ -118,7 +116,7 @@ class Api::V1::EventsController < Api::V1::ApiController
         render json: { errors: position.errors.messages }, status: :unprocessable_entity and return
       end
     end
-    # Process tags, meh
+    # Process tags, DRY
     tags = []
     if event_params[:tags].present?
       event_params[:tags].each do |tag|
