@@ -23,4 +23,23 @@ class Api::V1::CreatorsController < Api::V1::ApiController
       render json: creator, status: :ok
     end
   end
+
+  # POST /api/v1/creators
+  # Request and save errors
+  def create
+    begin
+      creator = Creator.new(params.require(:creator).permit(:displayname, :email, :password, :password_confirmation))
+
+      if creator.save
+        render json: creator, status: :created
+      else
+        render json: creator.errors.messages, status: :unprocessable_entity
+      end
+    rescue
+      render json: {
+        error: 'Parse error: check spelling, etc.',
+        creator: { displayname: 'User 1', email: 'user@one.se', password: 'userone', password_confirmation: 'userone' }
+      }, status: :bad_request and return
+    end
+  end
 end
