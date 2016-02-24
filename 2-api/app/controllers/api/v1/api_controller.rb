@@ -31,4 +31,16 @@ class Api::V1::ApiController < ActionController::Base
 
     # Else true and keep on with the action..
   end
+
+  def render_param_response
+    return {
+      error: 'Parse error: check spelling, etc. Event obj required.',
+      event: {
+        name: 'string, required',
+        description: 'string, required',
+        position: { latitude: 'integer, required', longitude: 'integer, required'},
+        tags: [ { name: 'optional' }, { name: 'optional' } ]
+      },
+    }
+  end
 end

@@ -1,6 +1,6 @@
 class Api::V1::EventsController < Api::V1::ApiController
   before_action :restrict_access
-  before_action :check_authorization, only: [:create, :destroy]
+  before_action :check_authorization, only: [:create, :destroy, :update]
 
   # GET /api/v1/events
   def index
@@ -28,22 +28,14 @@ class Api::V1::EventsController < Api::V1::ApiController
   # POST /api/v1/events
   # Create event to current creator
   # Only if authentication passed
+  # Tried to covert some parts to helper method for reuseability, issues with the render json part
   def create
-    begin
+    begin # Initialize and check if "event" cannot be found > error
       event = Event.new(event_params.except(:tags, :position))
       position = Position.new(event_params[:position])
-      tags = event_params[:tags]
     rescue
-      # Friendly error response
-      render json: {
-        error: 'Parse error: check spelling, etc. Event obj required, name, description and position is required.',
-        event: {
-          name: 'string, required',
-          description: 'string, required',
-          position: { latitude: 'integer, required', longitude: 'integer, required'},
-          tags: [ { name: 'optional' }, { name: 'optional' } ]
-        },
-      }, status: :bad_request and return
+      # Friendly error response, should contain event obj. Helper method /api_controller.rb
+      render json: render_param_response, status: :unprocessable_entity and return
     end
 
     # Create tags if present in request and if "new" or use existing tags.
@@ -69,13 +61,12 @@ class Api::V1::EventsController < Api::V1::ApiController
       end
     end
 
-    # Add position and creator to the event
     event.position = position
     event.creator = @current_creator
 
     # Do try and save the event
     if event.save
-      render json: event, status: :created
+      render json: { action: 'create', event: event, position: event.position, tags: event.tags }, status: :created
     else
       render json: { errors: event.errors.messages }, status: :unprocessable_entity
     end
@@ -105,9 +96,60 @@ class Api::V1::EventsController < Api::V1::ApiController
     end
   end
 
-  private
+  # PUT /api/v1/events/:id
+  # Tried to do the hash update, couldn't get it to work...
+  # # Helper methods from /api_controller.rb
+  def update
+    begin
+      eventParams = event_params
+    rescue
+      # Friendly error response, should contain event obj. Helper method /api_controller.rb
+      render json: render_param_response, status: :unprocessable_entity and return
+    end
+    if !event = Event.find_by_id(params[:id])
+      render json: { errors: 'Event was not found. Aborted action. Correct Id?' }, status: :not_found and return
+    end
 
-  # Permit event obj with allowed fields
+    # Process position, meh DRY, couldnt work around render json: ... "and return"
+    position = Position.where(event_params[:position])[0]
+    if position.nil?
+      position = Position.new(event_params[:position])
+      if !position.save
+        render json: { errors: position.errors.messages }, status: :unprocessable_entity and return
+      end
+    end
+    # Process tags, meh
+    tags = []
+    if event_params[:tags].present?
+      event_params[:tags].each do |tag|
+        _tag = Tag.where('lower(name) = ?', tag['name'].downcase).first
+        if _tag.nil?
+          _tag = Tag.new(tag)
+          if !_tag.save
+            render json: { errors: _tag.errors.messages }, status: :unprocessable_entity and return
+          end
+        end
+        tags.push(_tag)
+      end
+    end
+
+    # Update event
+    if !event.update(name: event_params[:name], description: event_params[:description])
+      render json: { errors: event.errors.messages }, status: :unprocessable_entity and return
+    end
+    # Update position
+    if !event.update(position: position)
+      render json: { errors: event.position.errors.messages }, status: :unprocessable_entity and return
+    end
+    # Update tags
+    if !event.update(tags: tags)
+      render json: { errors: event.errors.messages }, status: :unprocessable_entity
+    else
+      render json: { action: 'update', event: event, position: event.position, tags: event.tags }, status: :created
+    end
+  end
+
+  private
   def event_params
     params.require(:event).permit(:name, :description, tags: [:name], position: [:longitude, :latitude])
   end
