@@ -4,18 +4,59 @@ class Api::V1::EventsController < Api::V1::ApiController
   before_action :offset_and_limit_params, only: [:index]
 
   # GET /api/v1/events
+  # Get events by tag_id if that param is present.
+  # Get events nearby location of lat and lng if those params are present
+  # or filter tag events if tag_id param is present aswell
+  # Else defaults at "all" events, limit and offset can be used with all search
   def index
-    if (tag = Tag.find_by_id(params[:tag_id])).nil?
-      events = Event.all
-    else
-      events = tag.events
+    events = []
+    if params[:tag_id]
+      if !(tag = Tag.find_by_id(params[:tag_id])).nil?
+        events = tag.events.limit(@limit).offset(@offset).order("created_at DESC")
+      else
+        render json: { error: 'No events found'}, status: :not_found and return
+      end
+    end
+    if params[:lat] && params[:lng]
+      lat = params[:lat].to_f
+      lng = params[:lng].to_f
+
+      if (nearby_positions = Position.where(latitude: lat - 2..lat + 2, longitude: lng - 2..lng + 2)).nil?
+        render json: { error: 'No events found'}, status: :not_found and return
+      else
+        # With tag query search, filter events
+        if events.present?
+          tempArray = []
+          events.each do |event|
+            if nearby_positions.exists?(event.position)
+              tempArray.push(event)
+            end
+          end
+          events = tempArray
+        else
+          # Without tag query search
+          nearby_positions.each do |position|
+            position.events.each do |event|
+              events.push(event)
+            end
+          end
+        end
+        # Do offset, limit, sort
+        events = events[@offset, @offset+@limit].sort_by{|e| e[:created_at]}.reverse!
+        if !events.present?
+          render json: { error: 'No events found'}, status: :not_found and return
+        end
+      end
     end
 
-    if events.nil?
+    if !events.present?
+      events = Event.all.limit(@limit).offset(@offset).order("created_at DESC")
+    end
+
+    if !events.present? || events.nil?
       render json: { error: 'No events found'}, status: :not_found
     else
-      # Response with offset, limit, total amount of events, and the events with the query
-      render json: { offset: @offset, limit: @limit, amount: events.count, events: events.limit(@limit).offset(@offset).order("created_at DESC") } , status: :ok
+      render json: { offset: @offset, limit: @limit, amount: events.count, events: events }, status: :ok
     end
   end
 
