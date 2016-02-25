@@ -13,22 +13,36 @@ class Api::V1::ApiController < ActionController::Base
 
     # Check credentials from the header and try to authenticate, true if all goes fine else 400
   def check_authorization
-    require 'base64' # Decode Basic Auth, Postman: Basic dXNlc3JAb25lLnNlOnVzZXJvbmU=
+    require 'base64' # Decode Basic Auth
 
     # Split, keep second part then decode and then split again
-    credentials = Base64.decode64(request.headers['Authorization'].split[1])
-    # => ["email:password"]
-    credentials = credentials.split(':')
-    # => ["email", "password"]
 
-    # Get the creator by email
-    @current_creator = Creator.find_by(email: credentials[0].downcase)
+    credentials = request.headers['Authorization']
 
-    # If nil and not able to authenticate with the password, return forbidden 403
-    unless @current_creator && @current_creator.authenticate(credentials[1])
-      render json: { error: 'Not authorized! Wrong credentials!'}, status: :forbidden
+    if credentials.nil?
+      render json: { error: 'Missing credentials, Authorization: Basic Auth (user@two.se:usertwo)'}, status: :bad_request
+    else
+      # Split > decode > split
+      credentials = Base64.decode64(credentials.split[1]).split(':')
+      # => ["Basic Digest"]
+      # => ["email:password"]
+      # => ["email", "password"]
+
+      # Get the creator by email
+      @current_creator = Creator.find_by(email: credentials[0].downcase)
+
+      # If nil and not able to authenticate with the password, return forbidden 403
+      unless @current_creator && @current_creator.authenticate(credentials[1])
+        render json: { error: 'Not authorized! Wrong credentials!'}, status: :forbidden
+      end
     end
+  end
 
-    # Else true and keep on with the action..
+  # Default parameters is 0 for offset and 20 for limit,
+  # basically default values if user didnt specify offset/limit
+  def offset_and_limit_params
+    # Ternary Logic :D
+    @offset = params[:offset].nil? ? 0  : params[:offset].to_i
+    @limit  = params[:limit].nil?  ? 20 : params[:limit].to_i
   end
 end

@@ -1,23 +1,27 @@
 class Api::V1::EventsController < Api::V1::ApiController
   before_action :restrict_access
   before_action :check_authorization, only: [:create, :destroy, :update]
+  before_action :offset_and_limit_params, only: [:index]
 
   # GET /api/v1/events
   def index
-    events = Event.all.order("created_at DESC")
+    if (tag = Tag.find_by_id(params[:tag_id])).nil?
+      events = Event.all
+    else
+      events = tag.events
+    end
 
     if events.nil?
       render json: { error: 'No events found'}, status: :not_found
     else
-      render json: events, status: :ok
+      # Response with offset, limit, total amount of events, and the events with the query
+      render json: { offset: @offset, limit: @limit, amount: events.count, events: events.limit(@limit).offset(@offset).order("created_at DESC") } , status: :ok
     end
   end
 
   #GET /api/v1/events/:id
   def show
-    event = Event.find_by_id(params[:id])
-
-    if tag.nil?
+    if (event = Event.find_by_id(params[:id])).nil?
       render json: { error: 'Event was not found. Provided ID does not exist.' }, status: :not_found
     else
       render json: event, status: :ok
