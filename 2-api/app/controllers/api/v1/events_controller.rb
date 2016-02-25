@@ -4,7 +4,7 @@ class Api::V1::EventsController < Api::V1::ApiController
 
   # GET /api/v1/events
   def index
-    events = Event.all
+    events = Event.all.order("created_at DESC")
 
     if events.nil?
       render json: { error: 'No events found'}, status: :not_found
@@ -26,23 +26,21 @@ class Api::V1::EventsController < Api::V1::ApiController
 
   # POST /api/v1/events
   # Creates an event to current creator, only if authentication passed
-  # Tried to covert some parts to helper method for reuseability, issues with the render json part
   def create
-    begin # Initialize and check if "event" can be found in the request
+    # Initialize and check if "event" can be found in the request,
+    # also acts as a param checker, should contain the event object
+    begin
       event = Event.new(event_params.except(:tags, :position))
       position = Position.new(event_params[:position])
     rescue
-      # Friendly error response, should contain event obj.
       render json: event_param_error_response, status: :unprocessable_entity and return
     end
 
-    # Create tags if present in request and if "new" or use existing tags.
+    # If present in the request. Create new or use existing tags.
     if event_params[:tags].present?
       event_params[:tags].each do |tag|
-        _tag = Tag.where('lower(name) = ?', tag['name'].downcase).first
-        if _tag.nil?
-          _tag = Tag.new(tag)
-          if !_tag.save
+        if (_tag = Tag.where('lower(name) = ?', tag['name'].downcase).first).nil?
+          if !(_tag = Tag.new(tag)).save
             render json: { errors: _tag.errors.messages }, status: :unprocessable_entity and return
           end
         end
@@ -50,11 +48,9 @@ class Api::V1::EventsController < Api::V1::ApiController
       end
     end
 
-    # Create position if new or use existing position.
-    position = Position.where(event_params[:position])[0]
-    if position.nil?
-      position = Position.new(event_params[:position])
-      if !position.save
+    # Create new position or use existing position.
+    if (position = Position.where(event_params[:position])[0]).nil?
+      if !(position = Position.new(event_params[:position])).save
         render json: { errors: position.errors.messages }, status: :unprocessable_entity and return
       end
     end
@@ -72,13 +68,13 @@ class Api::V1::EventsController < Api::V1::ApiController
 
   # DELETE /api/v1/events/:id
   # Only able to delete the creators own events and not others.
-  # Destroy associated resources aswell if relevant
+  # Destroy position and tag only if the event was the "only" event associated with the resource.
   def destroy
-    event = @current_creator.events.find_by_id(params[:id])
-    if !event.nil?
-      position = event.position
-      if position.events.size == 1
-        position.destroy
+    if (event = @current_creator.events.find_by_id(params[:id])).nil?
+      render json: { error: 'Event was not found. Aborted action.' }, status: :not_found
+    else
+      if event.position.events.size == 1
+        event.position.destroy
       end
       event.tags.each do |tag|
         if tag.events.size == 1
@@ -86,43 +82,36 @@ class Api::V1::EventsController < Api::V1::ApiController
         end
       end
       event.destroy
-      head :no_content
-    else
-      render json: { error: 'Event was not found. Aborted action.' }, status: :not_found
+      head :no_content # Return status no_content on successful delete/destroy
     end
   end
 
   # PUT /api/v1/events/:id
-  # Tried to do the hash update, couldn't get it to work...
   def update
+    # Request checker, error response if request doesn't contains field: event
     begin
       eventParams = event_params
     rescue
-      # Friendly error response, should contain event obj.
       render json: event_param_error_response, status: :unprocessable_entity and return
     end
+
+    # Go on if above check passed
     if !event = Event.find_by_id(params[:id])
       render json: { errors: 'Event was not found. Aborted action. Correct Id?' }, status: :not_found and return
     end
 
-    # Process position. DRY, I know.
-    # Can refactor this and tags below but i lose the response for error message.
-    # Couldnt work around render json: ... "and return"
-    position = Position.where(event_params[:position])[0]
-    if position.nil?
-      position = Position.new(event_params[:position])
-      if !position.save
+    # Process position, create or use existing resource
+    if (position = Position.where(event_params[:position])[0]).nil?
+      if !(position = Position.new(event_params[:position])).save
         render json: { errors: position.errors.messages }, status: :unprocessable_entity and return
       end
     end
-    # Process tags, DRY
+    # Process tags, create or use existing resources
     tags = []
     if event_params[:tags].present?
       event_params[:tags].each do |tag|
-        _tag = Tag.where('lower(name) = ?', tag['name'].downcase).first
-        if _tag.nil?
-          _tag = Tag.new(tag)
-          if !_tag.save
+        if (_tag = Tag.where('lower(name) = ?', tag['name'].downcase).first).nil?
+          if !(_tag = Tag.new(tag)).save
             render json: { errors: _tag.errors.messages }, status: :unprocessable_entity and return
           end
         end
@@ -130,16 +119,13 @@ class Api::V1::EventsController < Api::V1::ApiController
       end
     end
 
-    # Update event
+    # Update event, position and tags with invalid field response (missing fields, not a number and etc)
+    # Tried to do the hash update, couldn't get it to work...
     if !event.update(name: event_params[:name], description: event_params[:description])
-      render json: { errors: event.errors.messages }, status: :unprocessable_entity and return
-    end
-    # Update position
-    if !event.update(position: position)
-      render json: { errors: event.position.errors.messages }, status: :unprocessable_entity and return
-    end
-    # Update tags
-    if !event.update(tags: tags)
+      render json: { errors: event.errors.messages }, status: :unprocessable_entity
+    elsif !event.update(position: position)
+      render json: { errors: event.position.errors.messages }, status: :unprocessable_entity
+    elsif !event.update(tags: tags)
       render json: { errors: event.errors.messages }, status: :unprocessable_entity
     else
       render json: { action: 'update', event: event, position: event.position, tags: event.tags }, status: :created
@@ -153,7 +139,7 @@ class Api::V1::EventsController < Api::V1::ApiController
 
   def event_param_error_response
     return {
-      error: 'Parse error: check spelling, etc. Event obj required.',
+      error: 'Parse error: check spelling, etc. Event obj required. Header: Content-Type: application/json',
       event: {
         name: 'string, required',
         description: 'string, required',
