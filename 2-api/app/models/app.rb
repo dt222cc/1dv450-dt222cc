@@ -13,9 +13,11 @@ class App < ActiveRecord::Base
   # Source: http://stackoverflow.com/questions/6021372/best-way-to-create-unique-token-in-rails01
   # Generate random_token and breaks if the random_token is "unique", else loop
     def generate_token
-    self.key = loop do
-      random_token = SecureRandom.urlsafe_base64(nil, false)
-      break random_token unless App.exists?(key: random_token)
+      if !self.key.present?
+        self.key = loop do
+          random_token = SecureRandom.urlsafe_base64(nil, false)
+        break random_token unless App.exists?(key: random_token)
+      end
     end
   end
 end
