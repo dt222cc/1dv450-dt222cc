@@ -24,13 +24,20 @@ $ rake db:setup
 $ rails server -b $PORT -p $IP
 ```
 
+## $ rails server -b $PORT -p $IP
+(Cloud9)
+
+If this command didn't work, open a new **Run Configuration** by clicking the plus sign that's located right side of open tab/tabs.
+
+Select Ruby on rails as the Runner and pick the directory /2-api/ as the CWD, then press Run and it "should" work.
+
 ## Namespace
 You can access the API by adding **/api/v1/** to the url, because of namespaces and versioning
 
 ## API-key
 Every request requires an api-key as **'access_token'**-parameter:
 ```
-/api/v1/events?access_token=whxCcu2btlThnOg-z_vslA
+/api/v1/events?access_token=BF6STN_TIeaHNM4t8oiBtw
 ```
 
 Available keys, use these or register for a new one
@@ -46,6 +53,7 @@ c_aWhv9o0Ux8uOO_THLbjg
 Only **JSON**, no xml
 
 ## Postman
+Do consider that the URL is different because it's against my cloud9 workspace.
 
 [POSTMAN-file with examples of available calls](https://www.getpostman.com/collections/6d4af80cddea0a337fb5)
 
@@ -136,5 +144,7 @@ Also only able to delete the creators own events.
 ## Note
 
 I opted to include lots of error responds for the developers using the API so they get an easier time using it.
+
+So the responses includes error message/messages and status code (not in the actual JSON response but as a "status code")
 
 The consequence for that is more cluttered code.
