@@ -15,7 +15,24 @@ Rails.application.routes.draw do
   # Resource route for api, within namespaces
   namespace :api, defaults: {format: 'json'}  do
     namespace :v1 do
-      resources :creators, :events, :positions, :tags
+      # resources :creators, :events, :positions, :tags
+
+      resources :creators, only: [:index, :show] do
+        resources :events, only: [:index, :show]
+      end
+
+      resources :events, only: [:index, :show, :create, :destroy, :update] do
+        resources :positions, only: [:index, :show]
+        resources :tags, only: [:index, :show]
+      end
+
+      resources :positions, only: [:index, :show] do
+        resources :events, only: [:index, :show]
+      end
+
+      resources :tags, only: [:index, :show] do
+        resources :events, only: [:index, :show]
+      end
     end
   end
 end
