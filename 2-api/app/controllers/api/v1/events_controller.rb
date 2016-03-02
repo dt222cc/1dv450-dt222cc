@@ -16,7 +16,8 @@ class Api::V1::EventsController < Api::V1::ApiController
     elsif params[:position_id]
       events = Event.where(position_id: params[:position_id])
     elsif params[:tag_id]
-      events = Tag.find_by_id(params[:tag_id]).events
+      tag = Tag.find_by_id(params[:tag_id])
+      events = tag.events unless tag.nil?
     else
       events = Event.all
     end
