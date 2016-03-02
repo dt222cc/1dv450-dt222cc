@@ -14,7 +14,6 @@ class Api::V1::CreatorsController < Api::V1::ApiController
 
   #GET /api/v1/creators/:id
   def show
-    #find_by_id() to avoid the exception caused by Creator.find() if tag was not found
     creator = Creator.find_by_id(params[:id])
 
     if creator.nil?

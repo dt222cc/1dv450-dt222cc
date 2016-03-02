@@ -14,7 +14,6 @@ class Api::V1::PositionsController < Api::V1::ApiController
 
   #GET /api/v1/positions/:id
   def show
-    #find_by_id() to avoid the exception caused by Position.find() if position was not found
     position = Position.find_by_id(params[:id])
 
     if position.nil?

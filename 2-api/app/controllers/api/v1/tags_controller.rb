@@ -14,7 +14,6 @@ class Api::V1::TagsController < Api::V1::ApiController
 
   # GET /api/v1/tags/:id
   def show
-    # find_by_id() to avoid the exception caused by Tag.find() if tag was not found
     tag = Tag.find_by_id(params[:id])
 
     if tag.nil?
