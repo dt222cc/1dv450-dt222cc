@@ -17,8 +17,9 @@ class Api::V1::EventsController < Api::V1::ApiController
       tag = Tag.find_by_id(params[:tag_id])
       events = tag.events unless tag.nil?
     elsif params[:query]
-      events = Event.joins(:tags)
+      events = Event.joins(:tags) # joins tags to be able to query tags
         .where("lower(events.name) like :query OR lower(description) like :query OR lower(tags.name) like :query", query: "%#{params[:query].downcase}%")
+        .uniq # uniq to avoid duplicates
     else
       events = Event.all
     end
@@ -202,7 +203,6 @@ class Api::V1::EventsController < Api::V1::ApiController
   end
 
   # Custom serialize to work with normal json (with offset, limit and amount)
-  # I exclude the ID beacuse it's present in the links
   def serialize_events(events)
     serialized_events = []
 
@@ -210,6 +210,7 @@ class Api::V1::EventsController < Api::V1::ApiController
       serialized_tags = []
       event.tags.each do |tag|
         serialized_tag = {
+          id: tag.id,
           name: tag.name,
           links: { self: api_v1_tag_path(tag.id), events: api_v1_tag_events_path(tag.id) }
         }
@@ -217,15 +218,18 @@ class Api::V1::EventsController < Api::V1::ApiController
       end
 
       serialized_event = {
+        id: event.id,
         name: event.name,
         description: event.description,
         links: { self: api_v1_event_path(event.id) },
         creator: {
+          id: event.creator.id,
           displayname: event.creator.displayname,
           email: event.creator.email,
           links: { self: api_v1_creator_path(event.creator.id), events: api_v1_creator_events_path(event.creator.id) }
         },
         position: {
+          id: event.position.id,
           latitude: event.position.latitude,
           longitude: event.position.longitude,
           links: { self: api_v1_position_path(event.position.id), events: api_v1_position_events_path(event.position.id) }
