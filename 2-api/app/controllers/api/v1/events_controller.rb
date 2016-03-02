@@ -16,6 +16,8 @@ class Api::V1::EventsController < Api::V1::ApiController
     elsif params[:tag_id]
       tag = Tag.find_by_id(params[:tag_id])
       events = tag.events unless tag.nil?
+    elsif params[:query]
+      events = Event.where("lower(name) like :query OR lower(description) like :query", query: "%#{params[:query].downcase}%")
     else
       events = Event.all
     end
