@@ -1,6 +1,5 @@
 class Api::V1::EventsController < Api::V1::ApiController
   before_action :check_authorization, only: [:create, :destroy, :update]
-  before_action :offset_and_limit_params, only: [:index]
 
   # GET /api/v1/events
   # All events, creator's events, position's events, tag's events

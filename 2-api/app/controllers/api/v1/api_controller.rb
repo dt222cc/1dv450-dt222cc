@@ -6,6 +6,8 @@ class Api::V1::ApiController < ActionController::Base
   # Must include access_token(api-key/api-token) with every request
   before_filter :restrict_access
 
+  before_filter :offset_and_limit_params, only: [:index]
+
   # User/developer must provide ApiKey for access
   # Example: /api/events?access_token=BniT_MXQ70EfFFMw3kRHSw
   def restrict_access

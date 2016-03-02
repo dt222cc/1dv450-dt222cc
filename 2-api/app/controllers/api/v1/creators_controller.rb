@@ -6,6 +6,8 @@ class Api::V1::CreatorsController < Api::V1::ApiController
     if creators.nil?
       render json: { error: 'No creators found'}, status: :not_found
     else
+      creators = creators.limit(@limit).offset(@offset).order("created_at DESC")
+      creators = serialize_creators(creators)
       render json: creators, status: :ok
     end
   end
@@ -19,5 +21,35 @@ class Api::V1::CreatorsController < Api::V1::ApiController
     else
       render json: creator, status: :ok
     end
+  end
+
+  private
+  # Custom serialize to work with normal json (with offset, limit and amount)
+  def serialize_creators(creators)
+    serialized_creators = []
+
+    creators.each do |creator|
+      serialized_creator = {
+        creator: {
+          id: creator.id,
+          displayname: creator.displayname,
+          email: creator.email,
+          links: {
+            self: api_v1_creator_path(creator.id),
+            events: api_v1_creator_events_path(creator.id)
+          }
+        }
+      }
+
+      serialized_creators.push(serialized_creator)
+    end
+
+    json = {}
+    json['offset'] = @offset unless @offset === 0
+    json['limit'] = @limit unless @limit === 20
+    json['amount'] = creators.count
+    json['creators'] = serialized_creators
+
+    return json
   end
 end
