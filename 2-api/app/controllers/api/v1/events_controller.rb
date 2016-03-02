@@ -1,5 +1,4 @@
 class Api::V1::EventsController < Api::V1::ApiController
-  before_action :restrict_access
   before_action :check_authorization, only: [:create, :destroy, :update]
   before_action :offset_and_limit_params, only: [:index]
 

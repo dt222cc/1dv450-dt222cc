@@ -3,6 +3,9 @@ class Api::V1::ApiController < ActionController::Base
   # For APIs, you may want to use :null_session instead.
   protect_from_forgery with: :null_session
 
+  # Must include access_token(api-key/api-token) with every request
+  before_filter :restrict_access
+
   # User/developer must provide ApiKey for access
   # Example: /api/events?access_token=BniT_MXQ70EfFFMw3kRHSw
   def restrict_access
@@ -11,22 +14,18 @@ class Api::V1::ApiController < ActionController::Base
     end
   end
 
-    # Check credentials from the header and try to authenticate, true if all goes fine else 400
+  # Check credentials from the header and try to authenticate, true if all goes fine else 400
   def check_authorization
-    require 'base64' # Decode Basic Auth
-
-    # Split, keep second part then decode and then split again
+    # Decode Basic Auth, future jwt?
+    require 'base64'
 
     credentials = request.headers['Authorization']
 
     if credentials.nil?
-      render json: { error: 'Missing credentials, Authorization: Basic Auth (user@two.se:usertwo)'}, status: :bad_request
+      render json: { error: 'Missing credentials, Authorization: Basic Auth (user@two.se:usertwo)'}, status: :forbidden
     else
       # Split > decode > split
       credentials = Base64.decode64(credentials.split[1]).split(':')
-      # => ["Basic Digest"]
-      # => ["email:password"]
-      # => ["email", "password"]
 
       # Get the creator by email
       @current_creator = Creator.find_by(email: credentials[0].downcase)

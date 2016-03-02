@@ -1,6 +1,4 @@
 class Api::V1::CreatorsController < Api::V1::ApiController
-  before_action :restrict_access
-
   # GET /api/v1/creators
   def index
     creators = Creator.all
