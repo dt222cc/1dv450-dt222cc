@@ -4,68 +4,61 @@ class Api::V1::EventsController < Api::V1::ApiController
   before_action :offset_and_limit_params, only: [:index]
 
   # GET /api/v1/events
-  # Get events by tag_id if that param is present.
-  # Get events nearby location of lat and lng if those params are present
-  # or filter tag events if tag_id param is present aswell
-  # Else defaults at "all" events, limit and offset can be used with all search
+  # All events, creator's events, position's events, tag's events
+  # Filter events by nearby coordinates if params lat and lng is present
+  # Limit and offset can be used with all searches
   def index
     events = []
-    if params[:tag_id]
-      if !(tag = Tag.find_by_id(params[:tag_id])).nil?
-        events = tag.events.limit(@limit).offset(@offset).order("created_at DESC")
-      else
-        render json: { error: 'No events found'}, status: :not_found and return
-      end
+
+    # Get events by creator/position/tag or all
+    if params[:creator_id]
+      events = Event.where(creator_id: params[:creator_id])
+    elsif params[:position_id]
+      events = Event.where(position_id: params[:position_id])
+    elsif params[:tag_id]
+      events = Tag.find_by_id(params[:tag_id]).events
+    else
+      events = Event.all
     end
-    if params[:lat] && params[:lng]
+
+    # Add offset, limit & order to current events if events are present from the search
+    events = events.limit(@limit).offset(@offset).order("created_at DESC") unless !events.present?
+
+    # Filter events by coordination if params lat and lng is present (keep nearby events)
+    if params[:lat] && params[:lng] && events.present?
       lat = params[:lat].to_f
       lng = params[:lng].to_f
 
+      # Retrieve positions of specified coordinates
       if (nearby_positions = Position.where(latitude: lat - 2..lat + 2, longitude: lng - 2..lng + 2)).nil?
-        render json: { error: 'No events found'}, status: :not_found and return
+        render json: { error: 'No events found within the coordinates'}, status: :not_found and return
       else
-        # With tag query search, filter events
-        if events.present?
-          tempArray = []
-          events.each do |event|
-            if nearby_positions.exists?(event.position)
-              tempArray.push(event)
-            end
-          end
-          events = tempArray
-        else
-          # Without tag query search
-          nearby_positions.each do |position|
-            position.events.each do |event|
-              events.push(event)
-            end
+        filteredEvents = []
+        events.each do |event|
+          if nearby_positions.exists?(event.position)
+            filteredEvents.push(event)
           end
         end
-        # Do offset, limit, sort
-        events = events[@offset, @offset+@limit].sort_by{|e| e[:created_at]}.reverse!
-        if !events.present?
-          render json: { error: 'No events found'}, status: :not_found and return
-        end
+
+        events = filteredEvents
       end
     end
 
-    if !events.present?
-      events = Event.all.limit(@limit).offset(@offset).order("created_at DESC")
-    end
-
-    if !events.present? || events.nil?
-      render json: { error: 'No events found'}, status: :not_found
+    # Check if events exists with all the filters.
+    if events.present?
+      # Serialize events to include offset(if not default), limit(if not default), amount
+      render json: serialize_events(events), status: :ok
     else
-      render json: { offset: @offset, limit: @limit, amount: events.count, events: events }, status: :ok
+      render json: { error: 'No events found'}, status: :not_found
     end
   end
 
   #GET /api/v1/events/:id
   def show
-    if (event = Event.find_by_id(params[:id])).nil?
-      render json: { error: 'Event was not found. Provided ID does not exist.' }, status: :not_found
-    else
+    if event = Event.find_by_id(params[:id])
       render json: event, status: :ok
+    else
+      render json: { error: 'Event was not found. Provided ID does not exist.' }, status: :not_found
     end
   end
 
@@ -115,19 +108,24 @@ class Api::V1::EventsController < Api::V1::ApiController
   # Only able to delete the creators own events and not others.
   # Destroy position and tag only if the event was the "only" event associated with the resource.
   def destroy
-    if (event = @current_creator.events.find_by_id(params[:id])).nil?
-      render json: { error: 'Event was not found. Aborted action.' }, status: :not_found
+    if Event.find_by_id(params[:id]).nil?
+      render json: { error: 'Event was not found. Aborted action. Correct Id?' }, status: :not_found
     else
-      if event.position.events.size == 1
-        event.position.destroy
-      end
-      event.tags.each do |tag|
-        if tag.events.size == 1
-          tag.destroy
+      event = @current_creator.events.find_by_id(params[:id])
+      if event.nil?
+        render json: { error: 'Forbidden, you are not the owner of this resource.' }, status: :forbidden
+      else
+        event.destroy
+        if event.position.events.size == 1
+          event.position.destroy
         end
+        event.tags.each do |tag|
+          if tag.events.size == 1
+            tag.destroy
+          end
+        end
+        head :no_content # Return status no_content on successful delete/destroy
       end
-      event.destroy
-      head :no_content # Return status no_content on successful delete/destroy
     end
   end
 
@@ -140,9 +138,14 @@ class Api::V1::EventsController < Api::V1::ApiController
       render json: event_param_error_response, status: :unprocessable_entity and return
     end
 
-    # Go on if above check passed
-    if !event = Event.find_by_id(params[:id])
-      render json: { errors: 'Event was not found. Aborted action. Correct Id?' }, status: :not_found and return
+    # Go on if event exists and if belongs to current creator/user
+    if Event.find_by_id(params[:id])
+      event = @current_creator.events.find_by_id(params[:id])
+      if event.nil?
+        render json: { error: 'Forbidden, you are not the owner of this resource.' }, status: :forbidden and return
+      end
+    else
+      render json: { error: 'Event was not found. Aborted action. Correct Id?' }, status: :not_found and return
     end
 
     # Process position, create or use existing resource
@@ -178,10 +181,12 @@ class Api::V1::EventsController < Api::V1::ApiController
   end
 
   private
+  # Strong params
   def event_params
     params.require(:event).permit(:name, :description, tags: [:name], position: [:longitude, :latitude])
   end
 
+  # Relative user friendly error response if the request was in the wrong format
   def event_param_error_response
     return {
       error: 'Parse error: check spelling, etc. Event obj required. Header: Content-Type: application/json',
@@ -192,5 +197,49 @@ class Api::V1::EventsController < Api::V1::ApiController
         tags: [ { name: 'optional' }, { name: 'optional' } ]
       },
     }
+  end
+
+  # Custom serialize to work with normal json (with offset, limit and amount)
+  # I exclude the ID beacuse it's present in the links
+  def serialize_events(events)
+    serialized_events = []
+
+    events.each do |event|
+      serialized_tags = []
+      event.tags.each do |tag|
+        serialized_tag = {
+          name: tag.name,
+          links: { self: api_v1_tag_path(tag.id), events: api_v1_tag_events_path(tag.id) }
+        }
+        serialized_tags.push(serialized_tag)
+      end
+
+      serialized_event = {
+        name: event.name,
+        description: event.description,
+        links: { self: api_v1_event_path(event.id) },
+        creator: {
+          displayname: event.creator.displayname,
+          email: event.creator.email,
+          links: { self: api_v1_creator_path(event.creator.id), events: api_v1_creator_events_path(event.creator.id) }
+        },
+        position: {
+          latitude: event.position.latitude,
+          longitude: event.position.longitude,
+          links: { self: api_v1_position_path(event.position.id), events: api_v1_position_events_path(event.position.id) }
+        },
+        tags: serialized_tags
+      }
+
+      serialized_events.push(serialized_event)
+    end
+
+    json = {}
+    json['offset'] = @offset unless @offset === 0
+    json['limit'] = @limit unless @limit === 20
+    json['amount'] = events.count
+    json['events'] = serialized_events
+
+    return json
   end
 end
