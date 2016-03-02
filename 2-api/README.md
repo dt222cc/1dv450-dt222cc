@@ -20,16 +20,15 @@ cd 2-api/
 Run following commands to install the dependencies, setup the database and start the server:
 ```
 $ bundle install
+
 $ rake db:setup
-$ rails server -b $PORT -p $IP
+
+$ rails server -p $PORT -b $IP
 ```
 
-## $ rails server -b $PORT -p $IP
-(Cloud9)
+**Alternative to `$ rails server -p $PORT -b $IP`**
 
-If this command didn't work, open a new **Run Configuration** by clicking the plus sign that's located right side of open tab/tabs.
-
-Select Ruby on rails as the Runner and pick the directory /2-api/ as the CWD, then press Run and it "should" work.
+**Cloud9:** Open a new **Run Configuration** by clicking the plus sign that's located right side of open tab/tabs. Select **Ruby on Rails** as the **Runner** and pick the directory **/2-api/** as the **CWD**, then **press Run** and it "should" work.
 
 ## Namespace
 You can access the API by adding **/api/v1/** to the url, because of namespaces and versioning
@@ -143,8 +142,13 @@ Also only able to delete the creators own events.
 
 ## Note
 
-I opted to include lots of error responds for the developers using the API so they get an easier time using it.
+I should probably have good error handling which handles many different scenarios. The consequence for that probably more cluttered code. We'll see if I can refactor it.
 
-So the responses includes error message/messages and status code (not in the actual JSON response but as a "status code")
+You can search for events with the following paths aswell:
+```
+/api/v1/creators/2/events
+/api/v1/positions/4/events
+/api/v1/tags/2/events
+```
 
-The consequence for that is more cluttered code.
+Offset and limit gets included in the response only if they are **not** default values.
