@@ -9,23 +9,24 @@ class Api::V1::EventsController < Api::V1::ApiController
     events = []
 
     # Get events by creator/position/tag or all
-    if params[:creator_id]
-      events = Event.where(creator_id: params[:creator_id])
-    elsif params[:position_id]
-      events = Event.where(position_id: params[:position_id])
-    elsif params[:tag_id]
-      tag = Tag.find_by_id(params[:tag_id])
-      events = tag.events unless tag.nil?
-    elsif params[:query]
-      events = Event.joins(:tags) # joins tags to be able to query tags
-        .where("lower(events.name) like :query OR lower(description) like :query OR lower(tags.name) like :query", query: "%#{params[:query].downcase}%")
-        .uniq # uniq to avoid duplicates
-    else
-      events = Event.all
-    end
+    events =
+      if params[:creator_id]
+        Event.where(creator_id: params[:creator_id])
+      elsif params[:position_id]
+        Event.where(position_id: params[:position_id])
+      elsif params[:tag_id]
+        tag = Tag.find_by_id(params[:tag_id])
+        tag.events unless tag.nil?
+      elsif params[:query]
+        Event.joins(:tags) # joins tags to be able to query tags
+          .where("lower(events.name) like :query OR lower(description) like :query OR lower(tags.name) like :query", query: "%#{params[:query].downcase}%")
+          .uniq # uniq to avoid duplicates
+      else
+        Event.all
+      end
 
     # Add offset, limit & order to current events if events are present from the search
-    events = events.limit(@limit).offset(@offset).order("created_at DESC") unless !events.present?
+    events = events.limit(@limit).offset(@offset).order("created_at DESC") if events.present?
 
     # Filter events by coordination if params lat and lng is present (keep nearby events)
     if params[:lat] && params[:lng] && events.present?
@@ -68,40 +69,54 @@ class Api::V1::EventsController < Api::V1::ApiController
   # POST /api/v1/events
   # Creates an event to current creator, only if authentication passed
   def create
-    # Initialize and check if "event" can be found in the request,
-    # also acts as a param checker, should contain the event object
     begin
-      event = Event.new(event_params.except(:tags, :position))
-      position = Position.new(event_params[:position])
+      # Check request for event object
+      eventParams = event_params
     rescue
       render json: event_param_error_response, status: :unprocessable_entity and return
     end
 
-    # If present in the request. Create new or use existing tags.
-    if event_params[:tags].present?
+    # Initialize event and add current creator to it
+    event = Event.new(event_params.except(:tags, :position))
+    event.creator = @current_creator
+
+    # Create new position or use existing position, (required)
+    if event_params[:position]
+      existingPosition = Position.where(event_params[:position]).first
+      if existingPosition
+        position = existingPosition
+      else
+        position = Position.new(event_params[:position])
+        if !position.save
+          render json: { errors: position.errors.messages }, status: :unprocessable_entity and return
+        end
+      end
+      event.position = position
+    else
+      render json: event_param_error_response, status: :unprocessable_entity and return
+    end
+
+    # Create new or use existing tags, (optional)
+    if event_params[:tags]
       event_params[:tags].each do |tag|
-        if (_tag = Tag.where('lower(name) = ?', tag['name'].downcase).first).nil?
-          if !(_tag = Tag.new(tag)).save
+        _tag = Tag.find_by_name(tag['name'].downcase)
+        if _tag
+          event.tags << _tag
+        else
+          _tag = Tag.new(tag)
+          if !_tag.save
             render json: { errors: _tag.errors.messages }, status: :unprocessable_entity and return
           end
         end
-        event.tags << _tag # Add tag to the event
       end
     end
 
-    # Create new position or use existing position.
-    if (position = Position.where(event_params[:position])[0]).nil?
-      if !(position = Position.new(event_params[:position])).save
-        render json: { errors: position.errors.messages }, status: :unprocessable_entity and return
-      end
-    end
-
-    event.position = position
-    event.creator = @current_creator
+    # render json: { event: event, position: position, tags: event.tags }, status: :unprocessable_entity and return
 
     # Do try and save the event
     if event.save
-      render json: { action: 'create', event: event, position: event.position, tags: event.tags }, status: :created
+      events = [ event ]
+      render json: serialize_events(events), status: :created
     else
       render json: { errors: event.errors.messages }, status: :unprocessable_entity
     end
@@ -119,13 +134,9 @@ class Api::V1::EventsController < Api::V1::ApiController
         render json: { error: 'Forbidden, you are not the owner of this resource.' }, status: :forbidden
       else
         event.destroy
-        if event.position.events.size == 1
-          event.position.destroy
-        end
+        event.position.destroy if event.position.events.size == 1
         event.tags.each do |tag|
-          if tag.events.size == 1
-            tag.destroy
-          end
+          tag.destroy if tag.events.size == 1
         end
         head :no_content # Return status no_content on successful delete/destroy
       end
@@ -240,12 +251,14 @@ class Api::V1::EventsController < Api::V1::ApiController
       serialized_events.push(serialized_event)
     end
 
-    json = {}
-    json['offset'] = @offset unless @offset === 0
-    json['limit'] = @limit unless @limit === 20
-    json['amount'] = events.count
-    json['events'] = serialized_events
+    # Return Object/JSON, conditions for including key and value
+    obj = {}
+    obj['offset'] = @offset unless @offset == 0 || @offset.nil?
+    obj['limit'] = @limit unless @limit == 20 || @limit.nil?
+    obj['amount'] = events.count unless events.count == 1
+    obj['events'] = serialized_events unless serialized_events.count == 1
+    obj['event'] = serialized_events[0] unless events.count != 1
 
-    return json
+    return obj
   end
 end
