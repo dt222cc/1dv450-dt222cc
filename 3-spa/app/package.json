@@ -1,0 +1,13 @@
+{
+  "name": "spa-position-application",
+  "author": "Sing Trinh (dt222cc)"
+  "version": "0.0.1",
+  "private": true,
+  "dependencies": {
+    "body-parser": "^1.0.2",
+    "express": "~4.1.1",
+    "method-override": "^1.0.0",
+    "morgan": "^1.0.0",
+    "errorhandler": "^1.1.1"
+  }
+}
