@@ -3,11 +3,12 @@
 
 /* Universal */
 body {
-	font-family: 'Indie Flower', cursive;
-	font-size: 3em;
+	font-family: 'Roboto';
+	font-size: 2em;
 }
 
 .index-header {
+	font-family: 'Indie Flower', cursive;
 	font-weight: 700;
 	color: green;
 }
