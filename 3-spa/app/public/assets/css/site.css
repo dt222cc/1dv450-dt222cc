@@ -1,34 +1,13 @@
+@import 'navbar.css';
+@import 'login.css';
+
 /* Universal */
+body {
+	font-family: 'Indie Flower', cursive;
+	font-size: 3em;
+}
 
-/* Set margin to the header text (because of use of navbar-fixed-top) */
 .index-header {
-  margin-top: 80px;
-}
-
-/* Navbar link color, effects */
-/* http://stackoverflow.com/questions/28265202/hover-transition-in-bootstrap-navbar-menu */
-.list-hover-slide > li {
-    position: relative;
-    overflow: hidden;
-}
-.list-hover-slide > li > a {
-    z-index: 1;
-    transition: .35s ease color;
-}
-.list-hover-slide > li > a:before, .list-hover-slide > li.dropdown.open > a:before {
-    content:'';
-    display: block;
-    z-index: -1;
-    position: absolute;
-    left: 0;
-    top: 0;
-    right: 0;
-    bottom: 0;
-    transform: translateX(-100%);
-    border-right: solid 5px tomato;
-    background: gray;
-    transition: .35s ease transform;
-}
-.list-hover-slide > li > a:hover:before, .list-hover-slide > li.dropdown.open > a:before {
-    transform: translateX(0);
+	font-weight: 700;
+	color: green;
 }

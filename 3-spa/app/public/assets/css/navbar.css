@@ -1,0 +1,38 @@
+/* http://stackoverflow.com/questions/28265202/hover-transition-in-bootstrap-navbar-menu */
+
+/* Margin for fixed navbar */
+.index-header {
+  margin-top: 80px;
+}
+.navbar {
+  font-weight: 700;
+}
+.navbar-brand {
+  font-size: 24px;
+}
+/* Navbar link color, effects (sweep to right) */
+.list-hover-slide > li {
+  position: relative;
+  overflow: hidden;
+}
+.list-hover-slide > li > a {
+  z-index: 1;
+  transition: .35s ease color;
+}
+.list-hover-slide > li > a:before, .list-hover-slide > li.dropdown.open > a:before {
+  content:'';
+  display: block;
+  z-index: -1;
+  position: absolute;
+  left: 0;
+  top: 0;
+  right: 0;
+  bottom: 0;
+  transform: translateX(-100%);
+  border-right: solid 10px green;
+  background: #66ff99;
+  transition: .35s ease transform;
+}
+.list-hover-slide > li > a:hover:before, .list-hover-slide > li.dropdown.open > a:before {
+  transform: translateX(0);
+}

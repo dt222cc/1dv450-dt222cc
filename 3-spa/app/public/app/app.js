@@ -26,6 +26,11 @@ angular
           controller: 'PlayerDetailController',
           controllerAs: 'player'
         }).
+        when('/login', {
+          templateUrl: '/app/components/login/loginView.html'
+          // controller: 'PlayerDetailController',
+          // controllerAs: 'player'
+        }).
         otherwise({
           redirectTo: '/app/components/home/homeView.html'
         });
