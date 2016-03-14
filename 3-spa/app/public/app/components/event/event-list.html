@@ -9,3 +9,11 @@
 <p>
   Note: Keep. View events, search/filter
 </p>
+
+<div>
+  <ul>
+    <li data-ng-repeat="_event in events.playerList">
+      {{ _event.name }} <a data-ng-href='event/{{_event.id}}'>More info</a>
+    </li>
+  </ul>
+</div>
