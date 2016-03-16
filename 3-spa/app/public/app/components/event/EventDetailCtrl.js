@@ -1,12 +1,8 @@
-// register the controller in the module (see ng-app in index.html)
-positioningApp.controller("EventDetailController", EventDetailController);
-
-// Dependency injections, routeParams give us the /:id
-EventDetailController.$inject = ['$routeParams', 'eventService'];
-
-function EventDetailController($routeParams, EventService) {
-  console.log("inside EventDetailController");
-
+/**
+ *
+ */
+positioningApp.controller("EventDetailController", ['$routeParams', 'eventService', function($routeParams, EventService) {
+  'use strict';
   // Set the ViewModel
   var vm = this;
 
@@ -16,4 +12,6 @@ function EventDetailController($routeParams, EventService) {
   // Update the ViewModel
   vm.name = thePlayer.name;
   vm.age = thePlayer.age;
-}
+}]);
+
+// Placeholder

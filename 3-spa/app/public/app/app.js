@@ -1,5 +1,3 @@
-'use strict';
-
 var positioningApp = angular.module('positioningApp', ['ngRoute']);
 
 positioningApp.constant('API_CONSTANT', {

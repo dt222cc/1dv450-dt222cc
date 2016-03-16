@@ -1,14 +1,13 @@
-positioningApp.factory('EventService', EventService);
-
-EventService.$inject = ['ResourceService'];
-
-function EventService(Resource) {
-  console.log('inside EventService');
-
+/**
+ *
+ */
+positioningApp.factory('EventService', ['ResourceService', function(Resource) {
+  'use strict';
+  // Returns the Service
   return {
     getEvents: function() {
       return Resource.getCollection('events');
     }
     // ...
-  }
-}
+  };
+}]);
