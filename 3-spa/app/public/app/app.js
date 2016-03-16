@@ -1,43 +1,33 @@
-var app = angular.module('app', ['ngRoute']);
+'use strict';
 
-app.constant('API_KEY', 'BF6STN_TIeaHNM4t8oiBtw');
-// Url depending on enviroment.
-// app.constant('BASE_URL', 'http://localhost:3000/api/v1/');
-// app.constant('BASE_URL', 'https://repo-1dv450-dt222cc-1.c9users.io/api/v1/');
-app.constant('BASE_URL', 'https://repo-1dv450-2-dt222cc-1.c9users.io/api/v1/');
+var positioningApp = angular.module('positioningApp', ['ngRoute']);
 
-app.config(['$routeProvider', '$locationProvider', function($routeProvider, $locationProvider) {
+positioningApp.constant('API_CONSTANT', {
+  'key': 'BF6STN_TIeaHNM4t8oiBtw', // Bad practice!? Key on client.
+  'url': 'http://repo-1dv450-dt222cc.c9users.io/api/v1/',
+  // 'url': 'http://localhost:3000/api/v1/',
+  'format': 'application/json'
+});
+
+positioningApp.config(['$routeProvider', '$locationProvider', function($routeProvider, $locationProvider) {
   $routeProvider.
     when('/', {
-      templateUrl: '/app/components/home/home.html'
-    }).
+      templateUrl: '/app/components/home/home.html'}).
     when('/events', {
-      templateUrl: '/app/components/event/event-list.html'
-      // controller: 'EventListController',
-      // controllerAs: 'events'
-    }).
+      templateUrl: '/app/components/event/event-list.html',
+      controller: 'EventListController as events'}).
     when('/event/:id', {
-      templateUrl: '/app/components/event/event-detail.html'
-      // controller: 'EventDetailController',
-      // controllerAs: 'event'
-    }).
+      templateUrl: '/app/components/event/event-detail.html',
+      controller: 'EventDetailController as event'}).
     when('/players', {
       templateUrl: '/app/components/player/player-list.html',
-      controller: 'PlayerListController',
-      controllerAs: 'players'
-    }).
+      controller: 'PlayerListController as players'}).
     when('/player/:id', {
       templateUrl: '/app/components/player/player-detail.html',
-      controller: 'PlayerDetailController',
-      controllerAs: 'player'
-    }).
+      controller: 'PlayerDetailController as player'}).
     when('/login', {
-      templateUrl: '/app/components/login/login.html'
-      // controller: 'LoginController',
-      // controllerAs: 'login'
-    }).
-    otherwise({
-      redirectTo: '/app/components/home/home.html'
-    });
+      templateUrl: '/app/components/login/login.html',
+      controller: 'LoginController as login'}).
+    otherwise({ redirectTo: '/' }); // Declare constants
   $locationProvider.html5Mode(true); // This removes the hash-bang and use the Session history management >= IE10
 }]);

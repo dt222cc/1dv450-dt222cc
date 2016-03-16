@@ -2,18 +2,20 @@
 <hr />
 
 <p>
-  This is a the page for events!
-  This text is in the template app/components/event/eventsView.html
+    This is a the page for events!
 </p>
 
-<p>
-  Note: Keep. View events, search/filter
-</p>
-
-<div>
-  <ul>
-    <li data-ng-repeat="_event in events.playerList">
-      {{ _event.name }} <a data-ng-href='event/{{_event.id}}'>More info</a>
-    </li>
-  </ul>
+<div class="col-md-6">
+    <table class="table">
+        <thead>
+            <tr>
+                <th>Name</th>
+                <th>Description</th>
+            </tr>
+        </thead>
+            <tr data-ng-repeat="event in events">
+                <td>{{event.name}}</td>
+                <td>{{event.description}}</td>
+            </tr>
+     </table>
 </div>
