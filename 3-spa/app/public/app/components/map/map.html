@@ -3,12 +3,14 @@
   <div id="map-container" ng-controller="MapController as vm">
     <ng-map center="56.56, 15.5" zoom="8">
     <marker ng-repeat="event in events" position="[{{event.position.latitude}}, {{event.position.longitude}}]" on-click="showEvent(event, event)"></marker>
+    <!-- Flaw: Case of multiple events on the same location -->
     <info-window id="eventInfo" max-width="200">
       <div>
-      <h4><a data-ng-href="event/{{vm.event.id}}">{{vm.event.name}}</a></h4>
-      <div id="info-event-body">
-        <b>{{vm.event.description}}</b>
-      </div>
+        <h4><a data-ng-href="event/{{vm.event.id}}">{{vm.event.name}}</a></h4>
+        <div id="info-event-body">
+          Description: {{vm.event.description}}<br>
+          Tags: {{vm.tags}}
+        </div>
       </div>
     </info-window>
     </ng-map>

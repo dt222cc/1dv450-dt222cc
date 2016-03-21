@@ -15,6 +15,17 @@ positioningApp.controller('MapController', ['$scope', 'NgMap', function($scope, 
    */
   $scope.showEvent = function(e, event) {
     vm.event = event;
+
+    vm.tags = '';
+    if (vm.event.tags.length > 0) {
+      vm.event.tags.forEach(function(tag) {
+        vm.tags += tag.name + ', ';
+      });
+      vm.tags = vm.tags.slice(0, -2);
+    } else {
+      vm.tags = 'Has no tags';
+    }
+
     var eventPosition = new google.maps.LatLng(event.position.latitude, event.position.longitude);
     vm.map.setCenter(eventPosition);
     vm.map.setZoom(10);
