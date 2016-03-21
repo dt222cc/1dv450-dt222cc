@@ -12,7 +12,7 @@ body {
   margin: auto;
   height: 100%;
 }
-#map {
+ng-map {
   height: 720px; /* temp fix */
   border: 1px solid blue;
 }

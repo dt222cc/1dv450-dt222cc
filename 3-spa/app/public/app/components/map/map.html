@@ -1,3 +1,16 @@
-<div id="map-container" ng-controller="MapController as vm" map-lazy-load="https://maps.google.com/maps/api/js">
-  <map id="map" center="56.56, 15.5" zoom="8"></map>
+<div id="event-map">
+  <h2>Map</h2>
+  <div id="map-container" ng-controller="MapController as vm">
+    <ng-map center="56.56, 15.5" zoom="8">
+    <marker ng-repeat="event in events" position="[{{event.position.latitude}}, {{event.position.longitude}}]" on-click="showEvent(event, event)"></marker>
+    <info-window id="eventInfo" max-width="200">
+      <div>
+      <h4><a data-ng-href="event/{{vm.event.id}}">{{vm.event.name}}</a></h4>
+      <div id="info-event-body">
+        <b>{{vm.event.description}}</b>
+      </div>
+      </div>
+    </info-window>
+    </ng-map>
+  </div>
 </div>
