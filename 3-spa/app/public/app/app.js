@@ -1,4 +1,6 @@
-var positioningApp = angular.module('positioningApp', ['ngRoute']);
+'use strict';
+
+var positioningApp = angular.module('positioningApp', ['ngRoute', 'ngMap']);
 
 positioningApp.constant('API_CONSTANT', {
   'key': 'BF6STN_TIeaHNM4t8oiBtw', // Bad practice!? Key on client.
@@ -10,8 +12,6 @@ positioningApp.constant('API_CONSTANT', {
 positioningApp.config(['$routeProvider', '$locationProvider', function($routeProvider, $locationProvider) {
   $routeProvider.
     when('/', {
-      templateUrl: '/app/components/home/home.html'}).
-    when('/events', {
       templateUrl: '/app/components/event/event-list.html',
       controller: 'EventListController as events'}).
     when('/event/:id', {

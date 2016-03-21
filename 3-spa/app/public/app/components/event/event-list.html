@@ -1,17 +1,26 @@
-<h1 class="jumbotrone index-header">Events</h1>
-<hr />
-
-<div class="col-md-6">
+<div id="events-div">
+  <h1 class="jumbotrone index-header">...</h1>
+  <hr />
+  <div>
+    <h2>...</h2>
+  </div>
+  <div id="event-list" class="col-md-6">
+    <h2>Event list</h2>
     <table class="table">
-        <thead>
-            <tr>
-                <th>Name</th>
-                <th>Description</th>
-            </tr>
-        </thead>
-            <tr data-ng-repeat="event in events">
-                <td>{{event.name}}</td>
-                <td>{{event.description}}</td>
-            </tr>
-     </table>
+      <thead>
+        <tr>
+          <th>Name</th>
+          <th>Description</th>
+        </tr>
+      </thead>
+      <tr data-ng-repeat="event in events">
+        <td>{{event.name}}</td>
+        <td>{{event.description}}</td>
+      </tr>
+    </table>
+  </div>
+  <div id="event-map">
+    <h2>Map</h2>
+    <div data-ng-include src="'app/components/map/map.html'"></div>
+  </div>
 </div>

@@ -1,11 +1,8 @@
 /**
  *
  */
-positioningApp.controller("EventListController", ['EventService', '$scope', function(eventService, $scope) {
-  'use strict';
-  //
-  eventService.getEvents().then(function(data) {
-    console.log(data);
-    $scope.events = data.events;
+positioningApp.controller("EventListController", ['EventService', '$scope', function(EventService, $scope) {
+  EventService.getEvents().then(function(data) {
+    $scope.events = data.data.events;
   });
 }]);
