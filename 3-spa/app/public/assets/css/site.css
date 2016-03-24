@@ -3,7 +3,7 @@
 /* Universal */
 body {
 	font-family: 'Roboto';
-	font-size: 2em;
+	/*font-size: 2em;*/
 }
 #events-div {
   margin-top: 50px;
@@ -13,7 +13,7 @@ body {
   height: 100%;
 }
 ng-map {
-  height: 720px; /* temp fix */
+  height: 800px; /* temp */
   border: 1px solid blue;
 }
 #event-list, #event-map {
@@ -22,9 +22,6 @@ ng-map {
 }
   #event-list table {
     margin-top: 20px;
-  }
-  #event-list table, #event-list h2 {
-    /*margin-left: -20px;*/
   }
 
 /* TODO: responsive, map below event list */
