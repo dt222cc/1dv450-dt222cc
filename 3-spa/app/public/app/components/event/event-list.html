@@ -1,24 +1,41 @@
-<div id="events-div">
+<div id="events-container">
   <h1 class="jumbotrone index-header">...</h1>
   <hr />
-  <div>
-    <h2>Search</h2>
-    <input type="text" class="form-control" ng-model="searchText">
+  <div class="row">
+    <div class="col-lg-6">
+      <div class="input-group">
+        <!-- attr: code & my-key-press: directives/myKeyPress.js -->
+        <input type="text" class="form-control" placeholder="Search for..." ng-model="searchText" code="13" my-key-press="searchEvents()" >
+        <span class="input-group-btn">
+          <button class="btn btn-default" type="button" ng-click="searchEvents()">Search</button>
+        </span>
+      </div>
+    </div>
+  </div>
+  <hr />
+  <div class="row">
+    <div class="col-lg-6">
+      <input type="text" class="form-control" placeholder="Filter results" ng-model="filterText" >
+    </div>
   </div>
   <div id="event-list">
-    <h2>Event list</h2>
+    <h2>Event list {{events.message}}</h2>
     <table class="table">
       <thead>
         <tr>
           <th>Name</th>
           <th>Description</th>
+          <th><a href="#"><i class="glyphicon glyphicon-plus"></i></a></th>
         </tr>
       </thead>
-      <tr data-ng-repeat="event in events">
-        <td>{{event.name}}</td>
+      <tr ng-repeat="event in events.eventList | filter:filterText">
+        <td><a href="#" ng-click="showOnMap()">{{event.name}}</a></td>
         <td>{{event.description}}</td>
+        <td>
+          <a href="event/{{event.id}}"><i class="glyphicon glyphicon-eye-open"></i></a>
+        </td>
       </tr>
     </table>
   </div>
-  <div data-ng-include src="'app/components/map/map.html'"></div>
+  <div ng-include src="'app/components/map/map.html'"></div>
 </div>

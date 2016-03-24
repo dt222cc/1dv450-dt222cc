@@ -9,6 +9,9 @@ positioningApp.factory('EventService', ['ResourceService', function(Resource) {
     },
     getEvent: function(id) {
       return Resource.getCollection('events/' + id);
+    },
+    getEventsWithQuery: function(query) {
+      return Resource.getCollection('events', {query: query});
     }
     // ...
   };
