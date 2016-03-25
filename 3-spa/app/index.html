@@ -16,7 +16,7 @@
 </head>
 <body>
   <div class="container">
-    <div ng-include src="'app/shared/navbar.html'"></div>
+    <div ng-include src="'app/components/navbar/navbar.html'"></div>
     <div ng-view></div>
   </div>
 
@@ -30,12 +30,14 @@
 
   <!-- Application JavaScript -->
   <script src="app/app.js"></script>
+  <script src="app/directives/myKeyPress.js"></script>
+  <script src="app/directives/myEventSearchBox.js"></script>
+  <script src="app/directives/myFilterBox.js"></script>
   <script src="app/components/login/LoginCtrl.js"></script>
   <script src="app/components/event/EventService.js"></script>
   <script src="app/components/event/EventDetailCtrl.js"></script>
   <script src="app/components/event/EventListCtrl.js"></script>
   <script src="app/components/shared/ResourceService.js"></script>
   <script src="app/components/map/MapCtrl.js"></script>
-  <script src="app/directives/myKeyPress.js"></script>
 </body>
 </html>
