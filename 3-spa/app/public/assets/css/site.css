@@ -23,8 +23,7 @@ ng-map {
   #event-list table {
     margin-top: 20px;
   }
-my-event-search-box {
-  display: block;
-  margin: 10px 0 10px 0;
+.my-event-search-box {
+  margin-bottom: 10px;
 }
 /* TODO: responsive, map below event list */

@@ -1,7 +1,21 @@
 <div id="events-container">
   <h1 class="jumbotrone index-header">...</h1>
-  <my-event-search-box></my-event-search-box>
-  <my-filter-box></my-filter-box>
+  <my-select-options></my-select-options>
+  <div class="row my-event-search-box">
+    <div class="col-lg-6">
+      <div class="input-group">
+        <input type="text" class="form-control" placeholder="Search for..." ng-model="searchText" code="13" my-key-press="searchEvents()" >
+        <span class="input-group-btn">' +
+          <button class="btn btn-default" type="button" ng-click="searchEvents()">Search</button>
+        </span>
+      </div>
+    </div>
+  </div>
+  <div class="row">
+    <div class="col-lg-6">
+      <input type="text" class="form-control" placeholder="Filter results" ng-model="filterText" >
+    </div>
+  </div>
   <div id="event-list">
     <h2>Event list {{events.message}}</h2>
     <table class="table">
