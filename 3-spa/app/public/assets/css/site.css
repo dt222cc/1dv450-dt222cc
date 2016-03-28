@@ -5,16 +5,16 @@ body {
 	font-family: 'Roboto';
 	/*font-size: 2em;*/
 }
-#events-div {
-  margin-top: 50px;
+ng-map {
+  height: 800px; /* temp */
+  border: 1px solid blue;
 }
 #container {
   margin: auto;
   height: 100%;
 }
-ng-map {
-  height: 800px; /* temp */
-  border: 1px solid blue;
+#events-div {
+  margin-top: 50px;
 }
 #event-list, #event-map {
   float: left;
@@ -23,7 +23,7 @@ ng-map {
   #event-list table {
     margin-top: 20px;
   }
-.my-event-search-box {
+#event-search-box {
   margin-bottom: 10px;
 }
 /* TODO: responsive, map below event list */
