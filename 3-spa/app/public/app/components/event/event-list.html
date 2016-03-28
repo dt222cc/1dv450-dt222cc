@@ -1,23 +1,64 @@
 <div id="events-container">
-  <h1 class="jumbotrone index-header">...</h1>
-  <my-select-options></my-select-options>
-  <div class="row my-event-search-box">
-    <div class="col-lg-6">
-      <div class="input-group">
-        <input type="text" class="form-control" placeholder="Search for..." ng-model="searchText" code="13" my-key-press="searchEvents()" >
-        <span class="input-group-btn">' +
-          <button class="btn btn-default" type="button" ng-click="searchEvents()">Search</button>
-        </span>
+  <!-- <h1 class="jumbotrone index-header">...</h1> -->
+  <div id="search-options">
+    <h2>Options</h2>
+    <div id="search-type" class="row">
+      <div class="col-lg-6">
+        <h4>Search type</h4>
+        <div class="radio"><label><input type="radio" name="optradio" ng-model="radioModel.value" value="id">ID</label></div>
+        <div class="radio"><label><input type="radio" name="optradio" ng-model="radioModel.value" value="query">Query</label></div>
+        <div class="radio"><label><input type="radio" name="optradio" ng-model="radioModel.value" value="tag">Tag</label></div>
       </div>
     </div>
-  </div>
-  <div class="row">
-    <div class="col-lg-6">
-      <input type="text" class="form-control" placeholder="Filter results" ng-model="filterText" >
+    <div id="search-tag" class="row">
+      <div class="col-lg-6">
+        <div class="form-group">
+          <label for="sel1">Tags</label><!-- Reminder:swap with "tags" -->
+          <select class="form-control" id="sel1" ng-model="select" ng-options="e.name for e in events.eventList" my-disabled-checker="{{radioModel.value}}">
+            <option value="">Select tag <small>(If tag was checked in)</small></option>
+          </select>
+        </div>
+      </div>
     </div>
-  </div>
+    <div id="search-limit" class="row">
+      <div class="col-lg-6">
+        <div class="form-group">
+          <select class="form-control" id="sel2" ng-model="select2" ng-options="o for o in optionsRange">
+            <option value="">Limit <small>(default 20)</small></option>
+          </select>
+        </div>
+      </div>
+    </div>
+    <div id="search-offset" class="row">
+      <div class="col-lg-6">
+        <div class="form-group">
+          <select class="form-control" id="sel3" ng-model="select3" ng-options="o for o in optionsRange">
+            <option value="">Offset <small>(default 0)</small></option>
+          </select>
+        </div>
+      </div>
+    </div>
+  </div><!-- /#search-options -->
+  <hr>
+  <div id="events-text-fields">
+    <div id="event-search-box" class="row">
+      <div class="col-lg-6">
+        <div class="input-group">
+          <input type="text" class="form-control" placeholder="Search for..." ng-model="searchText" code="13" my-key-press="searchEvents()">
+          <span class="input-group-btn">
+            <button class="btn btn-default" type="button" ng-click="searchEvents()">Search</button>
+          </span>
+        </div>
+      </div>
+    </div>
+    <div id="event-filter-box" class="row">
+      <div class="col-lg-6">
+        <input type="text" class="form-control" placeholder="Filter results" ng-model="filterText">
+      </div>
+    </div>
+  </div><!-- /#events-text-fields -->
   <div id="event-list">
-    <h2>Event list {{events.message}}</h2>
+    <h2>Event list <small>{{events.message}}</small></h2>
     <table class="table">
       <thead>
         <tr>
@@ -34,6 +75,6 @@
         </td>
       </tr>
     </table>
-  </div>
+  </div><!-- /#event-list -->
   <div ng-include src="'app/components/map/map.html'"></div>
 </div>
