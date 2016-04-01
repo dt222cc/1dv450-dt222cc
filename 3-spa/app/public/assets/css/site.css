@@ -5,9 +5,13 @@ body {
 	font-family: 'Roboto';
 	/*font-size: 2em;*/
 }
-ng-map {
+#event-list-map ng-map {
   height: 800px; /* temp */
-  border: 1px solid blue;
+  border: 1px solid gray;
+}
+#event-add-map ng-map {
+  height: 300px; /* temp */
+  border: 1px solid gray;
 }
 #container {
   margin: auto;
@@ -16,14 +20,14 @@ ng-map {
 #events-div {
   margin-top: 50px;
 }
-#event-list, #event-map {
+#event-list, #event-list-map #map-container {
   float: left;
   width: 50%;
 }
   #event-list table {
     margin-top: 20px;
   }
-#event-search-box {
-  margin-bottom: 10px;
+#search-input {
+  margin-bottom: 14px;
 }
 /* TODO: responsive, map below event list */

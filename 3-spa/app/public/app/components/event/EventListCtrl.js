@@ -1,13 +1,15 @@
 /**
  *
  */
-positioningApp.controller("EventListController", ['EventService', '$scope', 'NgMap', function(EventService, $scope, NgMap) {
+positioningApp.controller("EventListController", ['$scope', 'NgMap', 'EventService', 'TagService', function($scope, NgMap, EventService, TagService) {
   // Using the ViewModel, primarily to store events as an array (fixes 'filter' throwing errors because of 'not array')
   var vm = this;
   vm.eventList = [];
+  vm.tagList = [];
+  vm.message = '';
   var searchTimeout = false; // Custom timeout
 
-  // On visit, show latest 20 events (default limit & offset)
+  // On visit (init), show latest 20 events (default limit & offset)
   EventService.getEvents().success(function(data) {
     vm.eventList = data.amount > 0 ? data.events : [];
     vm.message   = data.amount > 0 ? '(Latest 20 events)' : '(No events found)';
@@ -16,9 +18,21 @@ positioningApp.controller("EventListController", ['EventService', '$scope', 'NgM
     vm.message   = '(Service down, try again later)';
   });
 
-  // User may use the search bar to search for events, acts depending on selected search type
+  // Also retrieve all tags for the select field
+  TagService.getTags().success(function(data) {
+    vm.tagList = data.amount > 0 ? data.tags : [];
+    if (!vm.tagList) {
+      console.log(data);
+    } else {
+      vm.tagFirstSelectOption = 'Select tag';
+    }
+  }).error(function(err) {
+    vm.tagFirstSelectOption = 'No tags found, try again later';
+    console.log(err);
+  });
+
+  // Search for events depending of selected Search Type
   $scope.searchEvents = function() {
-    console.log($scope.searchText);
     if (!searchTimeout) { // TODO: add preloaders so the user know the process is in effect?
       searchTimeout = true; // Set to timeout/pause until request is done
       switch ($scope.radioModel.value) {
@@ -28,17 +42,15 @@ positioningApp.controller("EventListController", ['EventService', '$scope', 'NgM
           } else {
             getEvent();
           }
-          searchTimeout = false;
           break;
         case 'query':
           getEventsWithQuery();
           break;
         case 'tag':
-          console.log('work in progress: tag');
-          searchTimeout = false;
+          getEventsWithTagFilter();
           break;
         default:
-          console.log('just in case..');
+          console.log('just in case something odd happens..');
           searchTimeout = false;
       }
     } else {
@@ -51,6 +63,11 @@ positioningApp.controller("EventListController", ['EventService', '$scope', 'NgM
     value: 'id' // id (default), query, tag
   };
 
+  // Determined if the tag option is selected, usage: disable fields
+  $scope.isTagSearch =  function() {
+    return $scope.radioModel.value == 'tag';
+  };
+
   // Range for select inputs limit & offset, 1 to 100
   $scope.optionsRange = range(1, 100);
   function range(start, end) {
@@ -61,37 +78,43 @@ positioningApp.controller("EventListController", ['EventService', '$scope', 'NgM
     return foo;
   }
 
-  // Get a list of resources with a query search (text exists in name, description or tags)
+  // Get a list of resources with a query search (text exists in name, description or tag name)
   function getEventsWithQuery() {
     EventService.getEventsWithQuery($scope.searchText).success(function(data) {
-        onSuccess(data.events, data.amount);
-      }).error(function() {
-        onError();
-      });
+      onSuccess(data.events, data.amount);
+    }).error(function(err) {
+      onError();
+    });
   }
 
   // Get single resource
   function getEvent() {
     EventService.getEvent($scope.searchText).success(function(data) {
-        onSuccess([data.event]);
-      }).error(function() {
+      onSuccess([data.event]);
+    }).error(function(err) {
+      onError();
+    });
+  }
+
+  // Get all resources with the selected tag
+  function getEventsWithTagFilter() {
+    if ($scope.select) { // Check if the selected option is not the default one (is null)
+      EventService.getEventsWithTagFilter($scope.select.id).success(function(data) {
+        onSuccess(data.events);
+      }).error(function(err) {
         onError();
       });
+    }
   }
 
-  // Filter events to only keep events with specific tag
-  function getEventsWithTagFilter() {
-
-  }
-
-  // Message singular or plural
+  // Set eventList array and the message for user, singular or plural, reset timeout
   function onSuccess(events, amount) {
-    vm.eventList = events;
-    vm.message   = $scope.radioModel.value !== 'id' ? '(' + amount + ' events)' : '(Event with ID ' + $scope.searchText + ' found)';
-    searchTimeout   = false;
+    vm.eventList  = events;
+    vm.message    = $scope.radioModel.value !== 'id' ? '(' + amount + ' events)' : '(Event with ID ' + $scope.searchText + ' found)';
+    searchTimeout = false;
   }
 
-  // Empty list, Message singular or plural
+  // Empty eventList and set the message for user, singular or plural, reset timeout
   function onError() {
     vm.eventList  = [];
     vm.message    = $scope.radioModel.value !== 'id' ? '(No events found)' : '(Event with the ID ' + $scope.searchText + ' was not found)';

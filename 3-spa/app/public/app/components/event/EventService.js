@@ -12,7 +12,9 @@ positioningApp.factory('EventService', ['ResourceService', function(Resource) {
     },
     getEventsWithQuery: function(query) {
       return Resource.getCollection('events', {query: query});
+    },
+    getEventsWithTagFilter: function(id) {
+      return Resource.getCollection('events', {tag_id: id});
     }
-    // ...
   };
 }]);
