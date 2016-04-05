@@ -30,4 +30,6 @@ body {
 #search-input {
   margin-bottom: 14px;
 }
-/* TODO: responsive, map below event list */
+#reset-map {
+  margin-bottom: 12px;
+}
