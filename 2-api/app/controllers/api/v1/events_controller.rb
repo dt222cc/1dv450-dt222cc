@@ -197,7 +197,7 @@ class Api::V1::EventsController < Api::V1::ApiController
   private
   # Strong params
   def event_params
-    params.require(:event).permit(:name, :description, tags: [:name], position: [:longitude, :latitude])
+    params.require(:event).permit(:name, :description, tags: [:name], position: [:address_city, :longitude, :latitude])
   end
 
   # Relative user friendly error response if the request was in the wrong format
@@ -241,6 +241,7 @@ class Api::V1::EventsController < Api::V1::ApiController
         },
         position: {
           id: event.position.id,
+          address_city: event.position.address_city,
           latitude: event.position.latitude,
           longitude: event.position.longitude,
           links: { self: api_v1_position_path(event.position.id), events: api_v1_position_events_path(event.position.id) }
@@ -255,9 +256,9 @@ class Api::V1::EventsController < Api::V1::ApiController
     obj = {}
     obj['offset'] = @offset unless @offset == 0 || @offset.nil?
     obj['limit'] = @limit unless @limit == 20 || @limit.nil?
-    obj['amount'] = events.count unless events.count == 1
-    obj['events'] = serialized_events unless serialized_events.count == 1
-    obj['event'] = serialized_events[0] unless events.count != 1
+    obj['amount'] = events.count # unless events.count == 1
+    obj['events'] = serialized_events # unless serialized_events.count == 1
+    # obj['event'] = serialized_events[0] unless events.count != 1
 
     return obj
   end

@@ -29,6 +29,9 @@ gem 'bcrypt', '~> 3.1.7'
 gem 'bootstrap-sass'
 
 gem 'active_model_serializers'
+
+gem "geocoder"
+
 # Use Unicorn as the app server
 # gem 'unicorn'
 

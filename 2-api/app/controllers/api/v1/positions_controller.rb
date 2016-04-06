@@ -31,6 +31,7 @@ class Api::V1::PositionsController < Api::V1::ApiController
     positions.each do |position|
       serialized_position = {
         position: {
+          address_city: position.address_city,
           latitude: position.latitude,
           longitude: position.longitude,
           links: {

@@ -14,6 +14,7 @@ u.apps << App.create(name: 'SecondApp', description: '', key: 'cBedFzsSJ3KlOR0iA
 # User with one app
 u = User.create(email: '111@111.se', password: '111111', password_confirmation: '111111')
 u.apps << App.create(name: 'Cool', description: 'Really?', key: 'c_aWhv9o0Ux8uOO_THLbjg')
+u.apps << App.create(name: 'Quick Key', description: 'Really? Cmon..', key: 'abc') # Bwaha
 
 # User with no apps
 u = User.create(email: '222@222.se', password: '222222', password_confirmation: '222222')
@@ -27,36 +28,52 @@ c3 = Creator.create(displayname: 'User 3', email: 'user@three.com', password: 'i
 c4 = Creator.create(displayname: 'User 4', email: 'user@four.com', password: 'iamuser4', password_confirmation: 'iamuser4')
 
 # Add some Positions
-p1 = Position.create(latitude: '56.678629', longitude: '16.357822')
-p2 = Position.create(latitude: '56.703249', longitude: '16.357555')
-p3 = Position.create(latitude: '38.871869', longitude: '-77.056267')
-p4 = Position.create(latitude: '-75.731303', longitude: '31.170769')
-
-# Add some Events
-e1 = Event.create(name: 'Decision', description: 'What kind of position API should I go for?')
-e2 = Event.create(name: 'Shops? Food?', description: 'Perhaps places where you can eat brunch. Specific cuisine?')
-e3 = Event.create(name: 'Just events?', description: 'Events, celebrations, incidents, occurrences, experiences')
-e4 = Event.create(name: 'What is this?', description: 'Ice and snow')
+p1 = Position.create(address_city: "Smålands Lejons Väg, 393 58 Kalmar")
+p2 = Position.create(address_city: "Storgatan 35, 392 31 Kalmar")
+p3 = Position.create(address_city: "Gröndalsvägen 19, 391 28 Kalmar")
+p4 = Position.create(address_city: "Bredbandet 1, 392 30 Kalmar")
+p5 = Position.create(address_city: "Järnvägsstationen, 392 32 Kalmar")
+p6 = Position.create(address_city: "Galggatan 4, 391 29 Kalmar")
 
 # Add some Tags, lowercase
 t1 = Tag.create(name: 'tag1')
 t2 = Tag.create(name: 'tag2')
 t3 = Tag.create(name: 'tag3')
+t4 = Tag.create(name: 'demo')
+t5 = Tag.create(name: 'random')
 
-# Add tags to events
+# Add the/some Events
+e1 = Event.create(name: 'Event 1', description: 'Notive: There is no specific topic/genre')
+e2 = Event.create(name: 'Event 2', description: 'Adding some more events')
+e3 = Event.create(name: 'Event 3', description: 'Events, celebrations, incidents, occurrences, experiences, whatever')
+e4 = Event.create(name: 'Event 4', description: 'Description is needed...', )
+e5 = Event.create(name: 'Event 5', description: '.')
+e6 = Event.create(name: 'Event 6', description: '..')
+e7 = Event.create(name: 'Event 7', description: 'And another one')
+
+# Add tags to Events (Notice that we can have events with no tags)
 e1.tags << t1
 e2.tags << t2
+e3.tags << t3
+e4.tags << t1
 e4.tags << t2
-e4.tags << t3
+e5.tags << t4
+e5.tags << t5
 
 # Add events to creators (only creators can add events, can have many events)
-c2.events << e1
-c3.events << e2
-c4.events << e3
-c4.events << e4
+c1.events << e1
+c1.events << e2
+c1.events << e3
+c2.events << e4
+c3.events << e5
+c4.events << e6
+c4.events << e7
 
 # Also couple events to positions (A position can have many events)
 p1.events << e1
 p2.events << e2
 p3.events << e3
 p4.events << e4
+p5.events << e5
+p6.events << e6
+p1.events << e7

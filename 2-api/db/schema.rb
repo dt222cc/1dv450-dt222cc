@@ -53,10 +53,11 @@ ActiveRecord::Schema.define(version: 20160221221752) do
   add_index "events_tags", ["tag_id"], name: "index_events_tags_on_tag_id"
 
   create_table "positions", force: :cascade do |t|
-    t.float    "longitude",  null: false
-    t.float    "latitude",   null: false
-    t.datetime "created_at", null: false
-    t.datetime "updated_at", null: false
+    t.string   "address_city"
+    t.float    "longitude"
+    t.float    "latitude"
+    t.datetime "created_at",   null: false
+    t.datetime "updated_at",   null: false
   end
 
   create_table "tags", force: :cascade do |t|
