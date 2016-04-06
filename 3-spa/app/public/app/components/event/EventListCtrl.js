@@ -55,6 +55,11 @@ positioningApp.controller("EventListController", ['$scope', 'NgMap', 'EventServi
     return $scope.radioModel.value == 'tag';
   };
 
+  // Determined if the ID option is selected, usage: disable fields
+  $scope.isIdSearch =  function() {
+    return $scope.radioModel.value == 'id';
+  };
+
   // Range for select inputs limit & offset, 1 to 100
   $scope.optionsRange = range(1, 100);
   function range(start, end) {

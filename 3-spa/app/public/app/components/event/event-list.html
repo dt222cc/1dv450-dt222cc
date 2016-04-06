@@ -11,11 +11,11 @@
       </div>
     </div><!-- /#search-type -->
     <div id="limit-and-offset">
-      <h4>Search type</h4>
+      <h4>Limit and Offset</h4>
       <div id="div-limit" class="row">
         <div class="col-lg-6">
           <div class="form-group">
-            <select class="form-control" id="sel2" ng-model="select2" ng-options="o for o in optionsRange">
+            <select class="form-control" id="sel2" ng-model="select2" ng-options="o for o in optionsRange" ng-disabled="isIdSearch()">
               <option value="">Limit <small>(default 20)</small></option>
             </select>
           </div>
@@ -24,7 +24,7 @@
       <div id="div-offset" class="row">
         <div class="col-lg-6">
           <div class="form-group">
-            <select class="form-control" id="sel3" ng-model="select3" ng-options="o for o in optionsRange">
+            <select class="form-control" id="sel3" ng-model="select3" ng-options="o for o in optionsRange" ng-disabled="isIdSearch()">
               <option value="">Offset <small>(default 0)</small></option>
             </select>
           </div>
