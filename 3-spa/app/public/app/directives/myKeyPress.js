@@ -8,9 +8,10 @@ positioningApp.directive('myKeyPress', function() {
     link: function(scope, element, attrs) {
       element.bind("keypress", function(event) {
         var keyCode = event.which || event.keyCode;
-        if (keyCode == attrs.code) { // Check if keycode match
+        if (keyCode == attrs.code) {
+          event.preventDefault();
           scope.$apply(function() {
-            scope.$eval(attrs.myKeyPress); // Evaluate the expression
+            scope.$eval(attrs.myKeyPress);
           });
         }
       });

@@ -4,13 +4,13 @@
 positioningApp.controller("EventListController", ['$scope', 'NgMap', 'EventService', 'TagService', function($scope, NgMap, EventService, TagService) {
   // Using the ViewModel, primarily to store events as an array (fixes 'filter' throwing errors because of 'not array')
   var vm = this,
-      searchTimeout = false; // Custom timeout
+    searchTimeout = false; // Custom timeout
   vm.eventList = [];
-  vm.tagList = [];
-  vm.message = '';
+  vm.tagList   = [];
+  vm.message   = '';
 
   // On visit (init), show latest 20 events (default limit & offset),
-  // get all tags for search by tag name
+  // also get all tags to "populate" the tag select options
   init();
   function init() {
     getAllEvents();
@@ -70,7 +70,7 @@ positioningApp.controller("EventListController", ['$scope', 'NgMap', 'EventServi
     return foo;
   }
 
-  // Get all events
+  // Get all events, on error: overwrite the default error message
   function getAllEvents() {
     EventService.getEvents().success(function(data) {
       onSuccess(data.events, data.amount);
@@ -89,7 +89,7 @@ positioningApp.controller("EventListController", ['$scope', 'NgMap', 'EventServi
     });
   }
 
-  // Get single resource
+  // Get single resource, put event in an array to reuse list logic
   function getEvent() {
     EventService.getEvent($scope.searchText).success(function(data) {
       onSuccess([data.event]);
@@ -98,16 +98,16 @@ positioningApp.controller("EventListController", ['$scope', 'NgMap', 'EventServi
     });
   }
 
-  // Get all resources with the selected tag
+  // Get all resources (events) with the selected tag
   function getEventsWithTagFilter() {
-    if ($scope.select) { // Check if the selected option is not the default one (is null)
+    if ($scope.select) { // Check if the selected option is not the default one
       EventService.getEventsWithTagFilter($scope.select.id).success(function(data) {
         onSuccess(data.events, data.amount);
       }).error(function(err) {
         onError();
       });
     } else {
-      searchTimeout = false;
+      searchTimeout = false; // Make sure to unset pause
     }
   }
 
@@ -115,43 +115,41 @@ positioningApp.controller("EventListController", ['$scope', 'NgMap', 'EventServi
   function getAllTags() {
     TagService.getTags().success(function(data) {
       vm.tagList = data.amount > 0 ? data.tags : [];
-      if (!vm.tagList) {
-        console.log(data);
-      } else {
-        vm.tagFirstSelectOption = 'Select tag';
-      }
+      vm.tagFirstSelectOption = vm.tagList ? 'Select tag' : 'No tags found, try again later';
     }).error(function(err) {
       vm.tagFirstSelectOption = 'No tags found, try again later';
-      console.log(err);
     });
   }
 
   // Set eventList array and the message for user, singular or plural, reset timeout
   function onSuccess(events, amount) {
     var singularOrPlural = amount === 1 ? 'event' : 'events';
-    vm.eventList  = events;
-    vm.message    = $scope.radioModel.value === 'id' ?
-      isSearchTextEmpty() ? '(Showing all events)' :
-      '(Event with ID ' + $scope.searchText + ' found)' :
-      '(' + amount + ' ' + singularOrPlural + ' found)';
+    vm.eventList = events;
+    vm.message = $scope.radioModel.value === 'id'
+      ? isSearchTextEmpty()
+        ? '(Showing all events)'
+        : '(Event with ID ' + $scope.searchText + ' found)'
+      : '(' + amount + ' ' + singularOrPlural + ' found)';
     searchTimeout = false;
   }
 
   // Empty eventList and set the message for user, singular or plural, reset timeout
   function onError() {
     vm.eventList  = [];
-    vm.message    = $scope.radioModel.value === 'id' ? '(Event with the ID ' + $scope.searchText + ' was not found)' : '(No events found)';
+    vm.message = $scope.radioModel.value === 'id'
+      ? '(Event with the ID ' + $scope.searchText + ' was not found)'
+      : '(No events found)';
     searchTimeout = false;
   }
 
+  // Returns true/false
   function isSearchTextEmpty() {
     return $scope.searchText === undefined || $scope.searchText === '';
   }
 
-  // Test
+  // Postponed. Idea is to view the event on the map when you click
+  // on an event from the event "list"
   $scope.showOnMap = function() {
     console.log('click');
   };
 }]);
-
-// Fix: Timeout not resetting, singular & plural nouns for event results

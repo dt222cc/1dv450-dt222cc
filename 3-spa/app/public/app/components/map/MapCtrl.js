@@ -4,7 +4,8 @@
 positioningApp.controller('MapController', ['$scope', 'NgMap', function($scope, NgMap) {
   var vm = this;
   vm.defaultPosition = new google.maps.LatLng(56.56, 15.5);
-  vm.defaultZoom = 5;
+  vm.defaultZoom = 8;
+  vm.map;
 
   NgMap.getMap('map').then(function(map) {
     vm.map = map;
@@ -33,7 +34,6 @@ positioningApp.controller('MapController', ['$scope', 'NgMap', function($scope, 
     vm.map.setZoom(10);
     vm.map.showInfoWindow('eventInfo', this);
   };
-
 
    /*
       Currently only sets the default map position and zoom,
