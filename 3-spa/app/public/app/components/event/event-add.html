@@ -1,0 +1,58 @@
+<form name="newEventForm" class="col-md-12" required>
+  <h2>Add an event</h2>
+  <div class="form-group">
+    <label>Name:</label>
+    <input type="text" class="form-control" id="event-name" ng-model="eventName">
+  </div>
+  <div class="form-group">
+    <label>Description:</label>
+    <textarea class="form-control" rows="5" id="event-description" ng-model="eventDescription"></textarea>
+  </div>
+  <div id="event-add-map">
+    <label>Location: <small>(Press enter/search a second time to use it for the event)</small></label>
+    <div class="input-group">
+      <input type="text" class="form-control"
+      placeholder="Enter a location or click on a location on the map" ng-model="eventAddress" code="13" my-key-press="showLocation()"
+      value="" ng-change="isValidLocation()">
+      <span class="input-group-btn">
+        <button class="btn btn-default" type="button" ng-click="showLocation()">Search</button>
+      </span>
+    </div>
+    <div ng-include src="'app/components/map/map.html'"></div>
+  </div>
+  <div class="row offset-top-10">
+    <div class="col-lg-6">
+      <label>Add existing tag:</label>
+      <div class="form-group">
+        <select class="form-control" id="sel1"
+        ng-model="existingTags"ng-options="t.name for t in add_event.tagList" ng-change="addExistingTag()">
+          <option value="">{{add_event.tagFirstSelectOption}}</option>
+        </select>
+      </div>
+    </div>
+  </div>
+  <div class="row">
+    <div class="col-lg-6">
+      <label>Add new tag:</label>
+      <div class="input-group">
+        <input type="text" class="form-control"
+        placeholder="Tag name.." ng-model="newTag" code="13" my-key-press="addNewTag()">
+        <span class="input-group-btn">
+          <button class="btn btn-default" type="button" ng-click="addNewTag()">Add</button>
+        </span>
+      </div>
+    </div>
+  </div>
+  <div class="row offset-top-10" ng-show="add_event.eventTags.length !== 0">
+    <div class="col-lg-6">
+      <label>Added tags:</label>
+      <div ng-repeat="tag in add_event.eventTags">
+        <a ng-click="removeTag($index)"><i class="glyphicon glyphicon-remove"></i></a>
+        <span class="offset-left-10">{{tag.name}}</span>
+      </div>
+    </div>
+  </div>
+  <div class="offset-top-10">
+    <button type="submit" class="btn btn-default" ng-disabled="!isFormCompleted()" ng-click="submit()">Create</button>
+  </div>
+</form>

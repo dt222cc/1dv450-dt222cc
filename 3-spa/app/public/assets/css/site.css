@@ -33,3 +33,9 @@ body {
 #reset-map {
   margin-bottom: 12px;
 }
+.offset-left-10 {
+  margin-left: 10px;
+}
+.offset-top-10 {
+  margin-top: 10px;
+}
