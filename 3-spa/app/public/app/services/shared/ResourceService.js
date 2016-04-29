@@ -26,7 +26,8 @@ positioningApp.factory('ResourceService', function($http, API_CONSTANT) {
           'Accept': API_CONSTANT.format,
           'Authorization': 'Basic ' + digest
         },
-        params: params
+        params: params,
+        data: body // TODO: Double check if working as intended
       });
     }
     // ...

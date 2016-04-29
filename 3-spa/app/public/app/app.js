@@ -24,6 +24,7 @@ positioningApp.config(['$routeProvider', '$locationProvider', function($routePro
       templateUrl: '/app/views/login.html',
       controller: 'LoginController as login'}).
     when('/logout', {
+      template: '',
       controller: 'LogoutController as logout'}).
     otherwise({ redirectTo: '/' });
   $locationProvider.html5Mode(true); // This removes the hash-bang and use the Session history management >= IE10

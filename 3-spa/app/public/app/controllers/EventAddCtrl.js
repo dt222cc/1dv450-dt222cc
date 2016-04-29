@@ -1,7 +1,12 @@
 /**
  *
  */
-positioningApp.controller("EventAddController", ['$scope', 'EventService', 'TagService', 'NgMap', function($scope, EventService, TagService, NgMap) {
+positioningApp.controller("EventAddController", ['$scope', '$location', 'EventService', 'TagService', 'NgMap',
+function($scope, $location, EventService, TagService, NgMap) {
+  if (sessionStorage.currentUser === undefined) {
+    $location.path('/login');
+  }
+
   // Set the ViewModel
   var vm = this;
   vm.eventTags = [];
@@ -61,7 +66,7 @@ positioningApp.controller("EventAddController", ['$scope', 'EventService', 'TagS
         }
       });
     }
-  }
+  };
 
   // Get a location object from geocoding / reverse geocoding
   function geocodeLocation(location, callback) {
@@ -147,7 +152,7 @@ positioningApp.controller("EventAddController", ['$scope', 'EventService', 'TagS
         vm.eventTags.push($scope.existingTags);
       }
     }
-  }
+  };
 
   // Check and add an "new" tag to the event
   $scope.addNewTag = function() {
@@ -159,7 +164,7 @@ positioningApp.controller("EventAddController", ['$scope', 'EventService', 'TagS
         vm.eventTags.push({ name: $scope.newTag });
       }
     }
-  }
+  };
 
   // Remove tag from list
   $scope.removeTag = function(index) {
@@ -179,7 +184,7 @@ positioningApp.controller("EventAddController", ['$scope', 'EventService', 'TagS
         address_city: lastLocationSearch.formatted_address
       },
       tags: formattedTagList
-    }
+    };
     console.log(event);
 
     // Postponed, login first
@@ -191,5 +196,5 @@ positioningApp.controller("EventAddController", ['$scope', 'EventService', 'TagS
     //   console.log(error);
     //   console.log(data);
     // });
-  }
+  };
 }]);
