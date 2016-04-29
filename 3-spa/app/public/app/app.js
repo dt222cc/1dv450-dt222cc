@@ -12,16 +12,16 @@ positioningApp.constant('API_CONSTANT', {
 positioningApp.config(['$routeProvider', '$locationProvider', function($routeProvider, $locationProvider) {
   $routeProvider.
     when('/', {
-      templateUrl: '/app/components/event/event-list.html',
+      templateUrl: '/app/views/event-list.html',
       controller: 'EventListController as events'}).
     when('/event/:id', {
-      templateUrl: '/app/components/event/event-detail.html',
+      templateUrl: '/app/views/event-detail.html',
       controller: 'EventDetailController as event'}).
     when('/add_event', {
-      templateUrl: '/app/components/event/event-add.html',
+      templateUrl: '/app/views/event-add.html',
       controller: 'EventAddController as add_event'}).
     when('/login', {
-      templateUrl: '/app/components/session/login.html',
+      templateUrl: '/app/views/login.html',
       controller: 'LoginController as login'}).
     when('/logout', {
       controller: 'LogoutController as logout'}).

@@ -147,9 +147,9 @@ positioningApp.controller("EventListController", ['$scope', 'NgMap', 'EventServi
     return $scope.searchText === undefined || $scope.searchText === '';
   }
 
-  // Postponed. Idea is to view the event on the map when you click
-  // on an event from the event "list"
-  $scope.showOnMap = function() {
-    console.log('click');
-  };
+  // // Postponed. Idea is to view the event on the map when you click
+  // // on an event from the event "list"
+  // $scope.showOnMap = function() {
+  //   console.log('click');
+  // };
 }]);

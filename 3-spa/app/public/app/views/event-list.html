@@ -75,7 +75,8 @@
         </tr>
       </thead>
       <tr ng-repeat="event in events.eventList | filter:filterText">
-        <td><a href="#" ng-click="showOnMap()">{{event.name}}</a></td>
+        <td>{{event.name}}</td>
+        <!-- <td><a href="#" ng-click="showOnMap()">{{event.name}}</a></td> -->
         <td>{{event.description}}</td>
         <td>
           <a href="event/{{event.id}}"><i class="glyphicon glyphicon-eye-open"></i></a>
@@ -85,6 +86,6 @@
   </div><!-- /#event-list -->
   <div id="event-list-map">
     <h2>Map</h2>
-    <div ng-include src="'app/components/map/map.html'"></div>
+    <div ng-include src="'app/views/shared/map.html'"></div>
   </div>
 </div>

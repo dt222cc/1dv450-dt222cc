@@ -16,8 +16,8 @@ positioningApp.factory('EventService', ['ResourceService', function(Resource) {
     getEventsWithTagFilter: function(id) {
       return Resource.getCollection('events', {tag_id: id});
     },
-    addEvent: function(event) {
-      return Resource.postCollection('events', event); // Postponed, login first
+    addEvent: function(event, token) {
+      return Resource.postCollection('events', event, token);
     }
   };
 }]);

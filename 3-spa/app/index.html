@@ -16,7 +16,7 @@
 </head>
 <body>
   <div class="container">
-    <div ng-include src="'app/components/navbar/navbar.html'"></div>
+    <div ng-include src="'app/views/shared/navbar.html'"></div>
     <div ng-view></div>
   </div>
 
@@ -31,14 +31,14 @@
   <!-- Application JavaScript -->
   <script src="app/app.js"></script>
   <script src="app/directives/myKeyPress.js"></script>
-  <script src="app/components/shared/ResourceService.js"></script>
-  <script src="app/components/session/LoginCtrl.js"></script>
-  <script src="app/components/session/LogoutCtrl.js"></script>
-  <script src="app/components/map/MapCtrl.js"></script>
-  <script src="app/components/event/EventService.js"></script>
-  <script src="app/components/event/EventListCtrl.js"></script>
-  <script src="app/components/event/EventDetailCtrl.js"></script>
-  <script src="app/components/event/EventAddCtrl.js"></script>
-  <script src="app/components/tag/TagService.js"></script>
+  <script src="app/services/shared/ResourceService.js"></script>
+  <script src="app/services/EventService.js"></script>
+  <script src="app/services/TagService.js"></script>
+  <script src="app/controllers/LoginCtrl.js"></script>
+  <script src="app/controllers/LogoutCtrl.js"></script>
+  <script src="app/controllers/MapCtrl.js"></script>
+  <script src="app/controllers/EventListCtrl.js"></script>
+  <script src="app/controllers/EventDetailCtrl.js"></script>
+  <script src="app/controllers/EventAddCtrl.js"></script>
 </body>
 </html>
