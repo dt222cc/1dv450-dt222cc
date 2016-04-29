@@ -8,8 +8,9 @@ class Api::V1::ApiController < ActionController::Base
 
   before_filter :offset_and_limit_params, only: [:index]
 
-  after_filter :cors_set_access_control_headers
-  
+  # before_action :cors_set_access_control_headers
+  # after_filter :cors_set_access_control_headers
+
   # User/developer must provide ApiKey for access
   # Example: /api/events?access_token=BniT_MXQ70EfFFMw3kRHSw
   def restrict_access
@@ -49,9 +50,10 @@ class Api::V1::ApiController < ActionController::Base
     @limit  = params[:limit].nil?  ? 20 : params[:limit].to_i
   end
 
-  # Temp, while developing the client application
-  def cors_set_access_control_headers
-    headers['Access-Control-Allow-Origin'] = 'http://localhost:3000'
-    headers['Access-Control-Max-Age'] = "1728000"
-  end
+  # # Temp, while developing the client application
+  # def cors_set_access_control_headers
+  #   headers['Access-Control-Allow-Origin'] = '*'
+  #   # headers['Access-Control-Allow-Origin'] = 'http://localhost:3000'
+  #   headers['Access-Control-Max-Age'] = '1728000'
+  # end
 end

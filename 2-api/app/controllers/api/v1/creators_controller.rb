@@ -1,14 +1,24 @@
 class Api::V1::CreatorsController < Api::V1::ApiController
   # GET /api/v1/creators
   def index
-    creators = Creator.all
+    if params[:email]
+      creator = Creator.find_by_email(params[:email])
 
-    if creators.nil?
-      render json: { error: 'No creators found'}, status: :not_found
+      if creator.nil?
+        render json: { error: 'No creator with that email found'}, status: :not_found
+      else
+        render json: creator, status: :ok
+      end
     else
-      creators = creators.limit(@limit).offset(@offset).order("created_at DESC")
-      creators = serialize_creators(creators)
-      render json: creators, status: :ok
+      creators = Creator.all
+
+      if creators.nil?
+        render json: { error: 'No creators found'}, status: :not_found
+      else
+        creators = creators.limit(@limit).offset(@offset).order("created_at DESC")
+        creators = serialize_creators(creators)
+        render json: creators, status: :ok
+      end
     end
   end
 
@@ -21,6 +31,11 @@ class Api::V1::CreatorsController < Api::V1::ApiController
     else
       render json: creator, status: :ok
     end
+  end
+
+  def creator_by_email
+    creator = Creator.find_by_email(params[:email])
+
   end
 
   private

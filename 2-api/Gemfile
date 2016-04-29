@@ -32,6 +32,10 @@ gem 'active_model_serializers'
 
 gem "geocoder"
 
+# For fixing login issue
+# gem 'rack-cors', '~> 0.3.1'
+gem 'rack-cors', :require => 'rack/cors'
+
 # Use Unicorn as the app server
 # gem 'unicorn'
 
