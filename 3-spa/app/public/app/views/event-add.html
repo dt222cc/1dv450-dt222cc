@@ -9,10 +9,10 @@
     <textarea class="form-control" rows="5" id="event-description" ng-model="eventDescription"></textarea>
   </div>
   <div id="event-add-map">
-    <label>Location: <small>(Press enter/search a second time to use it for the event)</small></label>
+    <label>Location: <small>(Press enter/search a second time if it did not register)</small></label>
     <div class="input-group">
       <input type="text" class="form-control"
-      placeholder="Enter a location or click on a location on the map" ng-model="eventAddress" code="13" my-key-press="showLocation()"
+      placeholder="Enter an address" ng-model="eventAddress" code="13" my-key-press="showLocation()"
       value="" ng-change="isValidLocation()">
       <span class="input-group-btn">
         <button class="btn btn-default" type="button" ng-click="showLocation()">Search</button>

@@ -1,5 +1,5 @@
 /**
- *
+ * Login Controller: Authenticates user
  */
 positioningApp.controller('LoginController', ['$scope', '$location', 'LoginService', function($scope, $location, LoginService) {
   // Disable login if already logged in, redirect to '/'
@@ -15,21 +15,19 @@ positioningApp.controller('LoginController', ['$scope', '$location', 'LoginServi
   $scope.login = function() {
     var token = btoa($scope.email + ":" + $scope.password);
     LoginService.authenticateUser({}, token).success(function(data) {
-      // Should not arrive here, because of invalid object sent, "{}"
+      // There is no success path because of intentional invalid object, "{}"
     }).error(function(err, status) {
       if (status !== 403) {
-        if (status === 422) {
+        if (status === 422) { // Passed 403 and is 422 === Correct credentials
           setCurrentUser($scope.email, token);
-        } else {
-          console.log('An unexpected error occurred, try again later.');
-          alert('An unexpected error occurred, try again later.');
         }
       } else {
-        console.log('Forbidden. TODO: Message');
+        console.log('Forbidden, works as intended. TODO: Error/Flash Message');
       }
     });
   };
 
+  // Set session storage, is logged in. Redirect away from login
   function setCurrentUser(email, token) {
     LoginService.getCreatorByEmail(email)
       .success(function(data) {
@@ -39,9 +37,6 @@ positioningApp.controller('LoginController', ['$scope', '$location', 'LoginServi
         };
         sessionStorage.setItem('currentUser', JSON.stringify(currentUser));
         $location.path('/');
-      })
-      .error(function(err) {
-        console.log(err);
       });
   }
 }]);

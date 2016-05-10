@@ -17,17 +17,17 @@ positioningApp.factory('ResourceService', function($http, API_CONSTANT) {
         params: params
       });
     },
-    postCollection: function(collectionName, body, digest) {
+    postCollection: function(collectionName, obj, token) {
       var params = Object.assign({ access_token: API_CONSTANT.key });
       return $http({
         method: 'POST',
         url: API_CONSTANT.url + collectionName,
         headers: {
           'Accept': API_CONSTANT.format,
-          'Authorization': 'Basic ' + digest
+          'Authorization': 'Basic ' + token
         },
         params: params,
-        data: body // TODO: Double check if working as intended
+        data: obj // TODO: Double check if working as intended
       });
     }
     // ...

@@ -1,5 +1,5 @@
 /**
- * Destroy/delete the session
+ * Logout Controller: Destroy/delete the session and redirect to login page
  */
 positioningApp.controller('LogoutController', ['$scope', '$location', function ($scope, $location) {
   sessionStorage.removeItem('currentUser');
