@@ -21,19 +21,6 @@ function($scope, $location, EventService, TagService, NgMap) {
   var geocoder = new google.maps.Geocoder();
   NgMap.getMap('map').then(function(foundMap) {
     map = foundMap;
-    // map.addListener('click', function(event) {
-    //   if (window.location.pathname === '/add_event') {
-    //     clearMarkers();
-    //     var address = event.latLng.lat() + ', ' + event.latLng.lng()  ;
-    //     geocodeLocation(address, function(location) {
-    //       if (location !== undefined) {
-    //         addMarker(location);
-    //         centerLocation(location);
-    //         setNewZoom(15);
-    //       }
-    //     });
-    //   }
-    // });
   });
 
   // Keep submit button disabled if not completed
@@ -173,28 +160,51 @@ function($scope, $location, EventService, TagService, NgMap) {
 
   // On submit, compile into an event object ...
   $scope.submit = function() {
+    var confirmMessage   = '';
+    var tagsInString     = '';
     var formattedTagList = [];
+
+    // Process tags
     vm.eventTags.forEach(function(tag) {
       formattedTagList.push({ name: tag.name });
+      tagsInString += tag.name + ', ';
     });
+
+    // Further processing of tags
+    if (tagsInString !== undefined) {
+      tagsInString = tagsInString.slice(0, -2);
+    } else {
+      tagsInString = '"No tags added"';
+    }
+
+  // The event object to be sent for creation
     var event = {
       name: $scope.eventName,
       description: $scope.eventDescription,
-      location: {
+      position: {
         address_city: lastLocationSearch.formatted_address
       },
       tags: formattedTagList
     };
-    console.log(event);
 
-    // Postponed, login first
-    // EventService.addEvent(event).success(function(data) {
-    //   console.log('Success');
-    //   console.log(data);
-    // }).error(function(error, data) {
-    //   console.log('Fail');
-    //   console.log(error);
-    //   console.log(data);
-    // });
+    // A confirm message for the confirmation window,
+    // also used for reviewing event before the final submission
+    confirmMessage = 'Are you sure you want to create this event?\n\nEvent name: ' +
+      event.name + '\nEvent description: ' + event.description + '\nLocation: ' +
+      event.position.address_city + '\nTags: ' + tagsInString;
+
+    if (confirm(confirmMessage)) {
+      // Work In Progress
+      var token = JSON.parse(sessionStorage.currentUser).token;
+      EventService.addEvent({event: event}, token).success(function(data) {
+        $location.path('/');
+        // Needs confirmation of event creation, flash message
+      }).error(function(error, data) {
+        // Needs more testing and error message handling
+        console.log('Failed to create the event.');
+        console.log(error);
+        console.log(data);
+      });
+    }
   };
 }]);
