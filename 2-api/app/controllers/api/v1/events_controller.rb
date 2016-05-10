@@ -81,9 +81,10 @@ class Api::V1::EventsController < Api::V1::ApiController
     event.creator = @current_creator
 
     # Create new position or use existing position, (required)
-    if event_params[:position]
-      existingPosition = Position.where(event_params[:position]).first
-      if existingPosition
+    if !event_params[:position] || event_params[:position][:address_city].nil?
+      render json: event_param_error_response, status: :unprocessable_entity and return
+    else
+      if existingPosition = Position.where(event_params[:position]).first
         position = existingPosition
       else
         position = Position.new(event_params[:position])
@@ -92,8 +93,6 @@ class Api::V1::EventsController < Api::V1::ApiController
         end
       end
       event.position = position
-    else
-      render json: event_param_error_response, status: :unprocessable_entity and return
     end
 
     # Create new or use existing tags, (optional)
@@ -110,8 +109,6 @@ class Api::V1::EventsController < Api::V1::ApiController
         end
       end
     end
-
-    # render json: { event: event, position: position, tags: event.tags }, status: :unprocessable_entity and return
 
     # Do try and save the event
     if event.save
@@ -134,9 +131,9 @@ class Api::V1::EventsController < Api::V1::ApiController
         render json: { error: 'Forbidden, you are not the owner of this resource.' }, status: :forbidden
       else
         event.destroy
-        event.position.destroy if event.position.events.size == 1
+        event.position.destroy if event.position.events.size <= 1
         event.tags.each do |tag|
-          tag.destroy if tag.events.size == 1
+          tag.destroy if tag.events.size <= 1
         end
         head :no_content # Return status no_content on successful delete/destroy
       end
@@ -197,18 +194,20 @@ class Api::V1::EventsController < Api::V1::ApiController
   private
   # Strong params
   def event_params
-    params.require(:event).permit(:name, :description, tags: [:name], position: [:address_city, :longitude, :latitude])
+    params.require(:event).permit(:name, :description, tags: [:name], position: [:address_city])
   end
 
   # Relative user friendly error response if the request was in the wrong format
   def event_param_error_response
     return {
-      error: 'Parse error: check spelling, etc. Event obj required. Header: Content-Type: application/json',
-      event: {
-        name: 'string, required',
-        description: 'string, required',
-        position: { latitude: 'integer, required', longitude: 'integer, required'},
-        tags: [ { name: 'optional' }, { name: 'optional' } ]
+      error: 'Parse error: check spelling, etc. Example:',
+      body: {
+        event: {
+          name: 'string, required',
+          description: 'string, required',
+          position: { address_city: 'string, required'},
+          tags: [ { name: 'optional' }, { name: 'optional' } ]
+        }
       },
     }
   end

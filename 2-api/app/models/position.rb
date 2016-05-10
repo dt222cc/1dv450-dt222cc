@@ -4,6 +4,8 @@ class Position < ActiveRecord::Base
 
   ## Validates for presence and numericality for these two fields (float)
   # validates :latitude, :longitude, numericality: true, presence: true
+  ## Perhaps validate presence for address_city
+  validates :address_city, presence: true
 
   geocoded_by :address_city
   after_validation :geocode,

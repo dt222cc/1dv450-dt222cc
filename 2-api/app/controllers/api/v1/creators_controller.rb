@@ -33,11 +33,6 @@ class Api::V1::CreatorsController < Api::V1::ApiController
     end
   end
 
-  def creator_by_email
-    creator = Creator.find_by_email(params[:email])
-
-  end
-
   private
   # Custom serialize to work with normal json (with offset, limit and amount)
   def serialize_creators(creators)
