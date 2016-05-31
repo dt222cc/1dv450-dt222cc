@@ -36,7 +36,7 @@ positioningApp.controller('LoginController', ['$scope', '$location', 'LoginServi
           token: token
         };
         sessionStorage.setItem('currentUser', JSON.stringify(currentUser));
-        $location.path('/');
+        $location.path('/add_event');
       });
   }
 }]);
