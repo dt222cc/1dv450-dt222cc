@@ -3,36 +3,35 @@
 /* Universal */
 body {
 	font-family: 'Roboto';
-	/*font-size: 2em;*/
-}
-#event-list-map ng-map {
-  height: 800px; /* temp */
-  border: 1px solid gray;
-}
-#event-add-map ng-map {
-  height: 300px; /* temp */
-  border: 1px solid gray;
 }
 #container {
   margin: auto;
   height: 100%;
 }
+
+/* Event List */
+#event-list-map ng-map {
+  height: 400px;
+  border: 1px solid gray;
+}
+#event-list table {
+  margin-top: 20px;
+}
 #events-div {
   margin-top: 50px;
 }
-#event-list, #event-list-map #map-container {
-  float: left;
-  width: 50%;
-}
-  #event-list table {
-    margin-top: 20px;
-  }
+
 #search-input {
   margin-bottom: 14px;
 }
-#reset-map {
-  margin-bottom: 12px;
+
+/* Adding event */
+#event-add-map ng-map {
+  height: 300px;
+  border: 1px solid gray;
 }
+
+/* Extra */
 .offset-left-10 {
   margin-left: 10px;
 }

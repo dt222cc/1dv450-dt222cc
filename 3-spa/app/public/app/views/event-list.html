@@ -64,28 +64,50 @@
       </div>
     </div>
   </div><!-- /#events-filter-results -->
+  <!-- Map -->
+  <div id="event-list-map">
+    <h2>Map</h2>
+    <div id="map-container">
+      <ng-map id="map" center="{{mapBox.center}}" zoom="{{mapBox.zoom}}">
+        <marker
+          ng-repeat="e in events.eventList | filter:filterText"
+          position="[{{e.position.latitude}}, {{e.position.longitude}}]"
+          on-click="showOnMap(event, e)">
+        </marker>
+        <!-- Flaw: Case of multiple events on the same location -->
+        <info-window id="eventInfo">
+          <div ng-non-bindable>
+            <h4>{{selectedMarker.position.address_city}}</h4>
+            <div ng-repeat="e in selectedMarker.events">
+              <h4><a ng-href="event/{{e.id}}">{{e.name}}</a></h4>
+              <div id="info-event-body">
+                <p>Description: {{e.description}}</p>
+                <p>Tags: {{infoWindowTags}}</p>
+              </div>
+            </div>
+          </div>
+        </info-window>
+      </ng-map>
+    </div>
+  </div>
+  <!-- Event list -->
   <div id="event-list">
     <h2>Event list <small>{{events.message}}</small></h2>
     <table class="table table-hover">
       <thead>
         <tr>
+          <th></th>
           <th>Name</th>
           <th>Description</th>
           <th><a href="add_event"><i class="glyphicon glyphicon-plus"></i></a></th>
         </tr>
       </thead>
-      <tr ng-repeat="event in events.eventList | filter:filterText">
-        <td>{{event.name}}</td>
-        <!-- <td><a href="#" ng-click="showOnMap()">{{event.name}}</a></td> -->
-        <td>{{event.description}}</td>
-        <td>
-          <a href="event/{{event.id}}"><i class="glyphicon glyphicon-eye-open"></i></a>
-        </td>
+      <tr ng-repeat="e in events.eventList | filter:filterText">
+        <td><a href="#" ng-click="showOnMap(event, e)"><i class="glyphicon glyphicon-map-marker"></i></a></td>
+        <td><a data-ng-href="event/{{e.id}}">{{e.name}}</a></td>
+        <td>{{e.description}}</td>
+        <td><a data-ng-href="event/{{e.id}}/delete" ng-show="isOwner(e)"><i class="glyphicon glyphicon-remove"></i></a></td>
       </tr>
     </table>
   </div><!-- /#event-list -->
-  <div id="event-list-map">
-    <h2>Map</h2>
-    <div ng-include src="'app/views/shared/map.html'"></div>
-  </div>
 </div>

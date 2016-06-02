@@ -1,4 +1,4 @@
-<form name="newEventForm" class="col-md-12" required>
+<form name="newEventForm" class="col-md-12" required ng-init="clearMarkers()">
   <h2>Add an event</h2>
   <div class="form-group">
     <label>Name:</label>
@@ -9,7 +9,7 @@
     <textarea class="form-control" rows="5" id="event-description" ng-model="eventDescription"></textarea>
   </div>
   <div id="event-add-map">
-    <label>Location: <small>(Press enter/search a second time if it did not register)</small></label>
+    <label>Location: <small>(Press enter/search a second time if it did not register on the map)</small></label>
     <div class="input-group">
       <input type="text" class="form-control"
       placeholder="Enter an address" ng-model="eventAddress" code="13" my-key-press="showLocation()"
@@ -18,7 +18,21 @@
         <button class="btn btn-default" type="button" ng-click="showLocation()">Search</button>
       </span>
     </div>
-    <div ng-include src="'app/views/shared/map.html'"></div>
+    <div id="map-container">
+      <ng-map id="addMap" center="{{mapBox.center}}" zoom="{{mapBox.zoom}}">
+        <marker
+          position="[{{currentMarker.lat}}, {{currentMarker.lng}}]"
+          on-click="showMarker(event, l)">
+        </marker>
+        <info-window id="locationInfo">
+          <div ng-non-bindable>
+            <h4>{{currentMarker.address}}</h4>
+            <p>Lat: {{currentMarker.lat}}</p>
+            <p>Lng: {{currentMarker.lng}}</p>
+          </div>
+        </info-window>
+      </ng-map>
+    </div>
   </div>
   <div class="row offset-top-10">
     <div class="col-lg-6">

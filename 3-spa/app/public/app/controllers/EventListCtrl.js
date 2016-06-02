@@ -1,29 +1,29 @@
 /**
  *
  */
-positioningApp.controller("EventListController", ['$scope', 'NgMap', 'EventService', 'TagService', function($scope, NgMap, EventService, TagService) {
-  // Using the ViewModel, primarily to store events as an array (fixes 'filter' throwing errors because of 'not array')
-  var vm = this,
-    searchTimeout = false; // Custom timeout
+positioningApp.controller("EventListController", ['$scope', 'NgMap', 'EventService', 'TagService', '$filter',
+  function($scope, NgMap, EventService, TagService, $filter) {
+  // Using the ViewModel(vm), primarily to store objects as arrays which
+  // fixes the angular 'filter' functionality which throws errors if I use $scope, because of 'not array')
+  var vm = this;
+  var searchTimeout = false; // Custom timeout
   vm.eventList = [];
   vm.tagList   = [];
   vm.message   = '';
 
-  // On visit (init), show latest 20 events (default limit & offset),
-  // also get all tags to "populate" the tag select options
-  init();
-  function init() {
-    getAllEvents();
-    getAllTags();
-  }
+  $scope.mapBox = { center: [56.56, 15.5], zoom: 8 }; // Default/intitial map view
+  $scope.radioModel = { value: 'id' };                // Model for the radio buttons, Search Types: id (default), query & tag
+  $scope.optionsRange = range(1, 100);                //Range for select inputs limit & offset, 1 to 100
 
-  // Search for events depending of selected Search Type
+  /**
+   * Search for events depending of selected Search Type: id, query or tags.
+   * Empty ID equals to ALL events
+   */
   $scope.searchEvents = function() {
-    if (!searchTimeout) { // TODO: add preloaders so the user know the process is in effect?
+    if (!searchTimeout) {
       searchTimeout = true; // Set to timeout/pause until request is done
       switch ($scope.radioModel.value) {
         case 'id':
-        console.log($scope.searchText);
           if (isSearchTextEmpty()) {
             getAllEvents();
           } else {
@@ -37,40 +37,60 @@ positioningApp.controller("EventListController", ['$scope', 'NgMap', 'EventServi
           getEventsWithTagFilter();
           break;
         default:
-          console.log('just in case something odd happens..');
           searchTimeout = false;
       }
-    } else {
-      console.log('paused, wait until last action has finished');
     }
   };
 
-  // Model for the radio buttons, Search Type
-  $scope.radioModel = {
-    value: 'id' // id (default), query, tag
-  };
-
-  // Determined if the tag option is selected, usage: disable fields
+  /**
+   * Determined if the tag/ID option is selected, usage: disable fields
+   * @return {Boolean}
+   */
   $scope.isTagSearch =  function() {
     return $scope.radioModel.value == 'tag';
   };
-
-  // Determined if the ID option is selected, usage: disable fields
   $scope.isIdSearch =  function() {
     return $scope.radioModel.value == 'id';
   };
 
-  // Range for select inputs limit & offset, 1 to 100
-  $scope.optionsRange = range(1, 100);
-  function range(start, end) {
-    var foo = [];
-    for (var i = start; i <= end; i++) {
-      foo.push(i);
-    }
-    return foo;
-  }
+  /**
+   * Show the event on the map. Center, zoom, open info window(map only)
+   * @param  {[type]} event [description]
+   * @param  {[type]} e     [The actual event]
+   */
+  $scope.showOnMap = function(event, e) {
+    // New position and zoom
+    $scope.mapBox = {
+      center: [e.position.latitude, e.position.longitude],
+      zoom: 15,
+    };
 
-  // Get all events, on error: overwrite the default error message
+    // The selected marker's position and events
+    $scope.selectedMarker = {
+      position: e.position,
+      events: [] // Initialize here, next step is to populate this position's events
+    };
+
+    // Filter events to only show the events associated with selected address
+    vm.eventList.forEach(function(event) {
+      if (event.position.address_city === e.position.address_city) { // If found
+        $scope.selectedMarker.events.push(event); // Populate the marker's events
+      }
+    });
+
+    // Alter display of tags
+    $scope.infoWindowTags = 'Has no tags';
+    if (e.tags.length > 0) {
+      e.tags.forEach(function(tag) {
+        $scope.infoWindowTags += tag.name + ', ';
+      });
+      $scope.infoWindowTags = $scope.infoWindowTags.slice(0, -2);
+    }
+
+    $scope.map.showInfoWindow('eventInfo', this); // Open/show the Info Window
+  };
+
+  /* Get all events */
   function getAllEvents() {
     EventService.getEvents().success(function(data) {
       onSuccess(data.events, data.amount);
@@ -80,16 +100,17 @@ positioningApp.controller("EventListController", ['$scope', 'NgMap', 'EventServi
     });
   }
 
-  // Get a list of resources with a query search (text exists in name, description or tag name)
-  function getEventsWithQuery() {
-    EventService.getEventsWithQuery($scope.searchText).success(function(data) {
+  /* Get a list of resources with a query search (text exists in name, description or tag name) */
+  function getEventsWithQuery(query) {
+    query = query ? query : $scope.searchText;
+    EventService.getEventsWithQuery(query).success(function(data) {
       onSuccess(data.events, data.amount);
     }).error(function(err) {
       onError();
     });
   }
 
-  // Get single resource, put event in an array to reuse list logic
+  /* Get single resource, put event in an array to reuse list logic */
   function getEvent() {
     EventService.getEvent($scope.searchText).success(function(data) {
       onSuccess([data.event]);
@@ -98,7 +119,7 @@ positioningApp.controller("EventListController", ['$scope', 'NgMap', 'EventServi
     });
   }
 
-  // Get all resources (events) with the selected tag
+  /* Get all resources (events) with the selected tag */
   function getEventsWithTagFilter() {
     if ($scope.select) { // Check if the selected option is not the default one
       EventService.getEventsWithTagFilter($scope.select.id).success(function(data) {
@@ -111,7 +132,7 @@ positioningApp.controller("EventListController", ['$scope', 'NgMap', 'EventServi
     }
   }
 
-  // Retrieve all available tags for search by Tag name (select-options)
+  /* Retrieve all available tags for search by Tag name (select-options) */
   function getAllTags() {
     TagService.getTags().success(function(data) {
       vm.tagList = data.amount > 0 ? data.tags : [];
@@ -121,7 +142,11 @@ positioningApp.controller("EventListController", ['$scope', 'NgMap', 'EventServi
     });
   }
 
-  // Set eventList array and the message for user, singular or plural, reset timeout
+  /**
+   * Set eventList array and the message for user, singular or plural,
+   * @param  {Array}   events [Events from the API]
+   * @param  {Integer} amount [The amount of events, to handle singlur/plural text]
+   */
   function onSuccess(events, amount) {
     var singularOrPlural = amount === 1 ? 'event' : 'events';
     vm.eventList = events;
@@ -130,10 +155,10 @@ positioningApp.controller("EventListController", ['$scope', 'NgMap', 'EventServi
         ? '(Showing all events)'
         : '(Event with ID ' + $scope.searchText + ' found)'
       : '(' + amount + ' ' + singularOrPlural + ' found)';
-    searchTimeout = false;
+    searchTimeout = false; // Clear timeout
   }
 
-  // Empty eventList and set the message for user, singular or plural, reset timeout
+  /* Empty eventList and set the message for user, singular or plural, reset timeout */
   function onError() {
     vm.eventList  = [];
     vm.message = $scope.radioModel.value === 'id'
@@ -142,14 +167,36 @@ positioningApp.controller("EventListController", ['$scope', 'NgMap', 'EventServi
     searchTimeout = false;
   }
 
-  // Returns true/false
+  /**
+   * Returns true/false
+   * @return {Boolean} [description]
+   */
   function isSearchTextEmpty() {
     return $scope.searchText === undefined || $scope.searchText === '';
   }
 
-  // // Postponed. Idea is to view the event on the map when you click
-  // // on an event from the event "list"
-  // $scope.showOnMap = function() {
-  //   console.log('click');
-  // };
+  /**
+   * Function which populates an array with numbers
+   * @param  {Integer} start [Starting number]
+   * @param  {Integer} end   [Ending number]
+   * @return {Array}         [An array with an range]
+   */
+  function range(start, end) {
+    var foo = [];
+    for (var i = start; i <= end; i++) {
+      foo.push(i);
+    }
+    return foo;
+  }
+
+  /*
+   * On visit (init), show latest 20 events (default limit & offset),
+   * also get all tags to "populate" the tag select options
+   */
+  function init() {
+    getAllEvents();
+    getAllTags();
+  }
+
+  init(); // Go go
 }]);

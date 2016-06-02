@@ -47,6 +47,8 @@ Open a web-browser, URL is `localhost:3000`.
 
 If no events are being displayed, check the URL used (3-spa/app/public/app/app.js) and check if the API is working.
 
+Does not handle places with the same name.
+
 ## Credentials
 
 Email:    user@one.se
