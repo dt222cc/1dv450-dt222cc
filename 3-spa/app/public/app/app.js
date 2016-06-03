@@ -20,6 +20,10 @@ positioningApp.config(['$routeProvider', '$locationProvider', function($routePro
     when('/add_event', {
       templateUrl: '/app/views/event-add.html',
       controller: 'EventAddController as add_event'}).
+    when('/event/:id/edit', {
+      templateUrl: '/app/views/event-edit.html',
+      controller: 'EventEditController as event'
+    }).
     when('/event/:id/delete', {
       templateUrl: '/app/views/delete-resource.html',
       controller: 'DeleteResourceController as delete_resource'

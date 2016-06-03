@@ -1,18 +1,11 @@
-<div ng-show="isLoggedIn()">
-  <h2>Are you sure you want to delete this resource?</h2>
+<h2>Are you sure you want to delete this resource?</h2>
 
-  <form ng-show="!showFlashMessage()">
-    <button type="submit" class="btn btn-primary" ng-click="deleteResource()">Delete</button>
-    <a data-ng-href="/" class="btn btn-primary">Cancel</a>
-  </form>
+<form ng-show="!showFlashMessage()">
+  <button type="submit" class="btn btn-primary" ng-click="deleteResource()">Delete</button>
+  <a data-ng-href="/" class="btn btn-primary">Cancel</a>
+</form>
 
-  <div ng-show="showFlashMessage()">
-    <h4>{{flashMessage}}</h4>
-    <a data-ng-href="/" class="btn btn-primary">To event list</a>
-  </div>
-</div>
-
-<div ng-show="!isLoggedIn()">
-  <h2>403 Forbidden</h4>
+<div ng-show="showFlashMessage()">
+  <h4>{{flashMessage}}</h4>
   <a data-ng-href="/" class="btn btn-primary">To event list</a>
 </div>

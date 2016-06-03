@@ -17,7 +17,7 @@ positioningApp.factory('ResourceService', function($http, API_CONSTANT) {
         params: params
       });
     },
-    postCollection: function(collectionName, obj, token) {
+    postCollection: function(collectionName, resource, token) {
       var params = Object.assign({ access_token: API_CONSTANT.key });
       return $http({
         method: 'POST',
@@ -27,7 +27,7 @@ positioningApp.factory('ResourceService', function($http, API_CONSTANT) {
           'Authorization': 'Basic ' + token
         },
         params: params,
-        data: obj // TODO: Double check if working as intended
+        data: resource
       });
     },
     deleteCollection: function(collectionName, token) {
@@ -41,7 +41,19 @@ positioningApp.factory('ResourceService', function($http, API_CONSTANT) {
         },
         params: params
       });
-    }
-    // ...
+    },
+    updateCollection: function(collectionName, resource, token) {
+      var params = Object.assign({ access_token: API_CONSTANT.key });
+      return $http({
+        method: 'PUT',
+        url: API_CONSTANT.url + collectionName,
+        headers: {
+          'Accept': API_CONSTANT.format,
+          'Authorization': 'Basic ' + token
+        },
+        params: params,
+        data: resource
+      });
+    },
   };
 });

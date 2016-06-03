@@ -1,0 +1,62 @@
+<form name="editEventForm" class="col-md-12" ng-show="isLoggedIn()" required>
+  <h2>Edit an event</h2>
+  <p>On successful update you will be redirected to the event details of this event.</p>
+  <p>Current event details(name & description) is also shown as placeholder.</p>
+  <div class="form-group">
+    <label>Name:</label>
+    <input type="text" class="form-control" id="event-name" ng-model="eventName" placeholder="{{currentEvent.name}}">
+  </div>
+  <div class="form-group">
+    <label>Description:</label>
+    <textarea class="form-control" rows="5" id="event-description" ng-model="eventDescription" placeholder="{{currentEvent.description}}"></textarea>
+  </div>
+  <div class="row offset-top-10" ng-show="add_event.eventTags.length !== 0">
+    <div class="col-lg-6">
+      <label>Current tags:</label>
+      <div ng-repeat="tag in event.eventTags">
+      <a ng-click="removeTag($index)"><i class="glyphicon glyphicon-remove"></i></a>
+      <span class="offset-left-10">{{tag.name}}</span>
+      </div>
+    </div>
+  </div>
+  <div class="row offset-top-10">
+    <div class="col-lg-6">
+      <label>Add existing tag:</label>
+      <div class="form-group">
+      <select class="form-control" id="sel1"
+      ng-model="existingTags" ng-options="t.name for t in event.tagList" ng-change="addExistingTag()">
+        <option value="">{{tagFirstSelectOption}}</option>
+      </select>
+      </div>
+    </div>
+  </div>
+  <div class="row">
+    <div class="col-lg-6">
+      <label>Add new tag:</label>
+      <div class="input-group">
+        <input type="text" class="form-control"
+        placeholder="Tag name.." ng-model="newTag" code="13" my-key-press="addNewTag()">
+        <span class="input-group-btn">
+          <button class="btn btn-default" type="button" ng-click="addNewTag()">Add</button>
+        </span>
+      </div>
+    </div>
+  </div>
+  <div class="offset-top-10">
+    <button type="submit" class="btn btn-primary" ng-disabled="!isFormCompleted()" ng-click="submit()">Update</button>
+  </div>
+  <div class="offset-top-10">
+    <a data-ng-href="/" class="btn btn-primary">Return to event list</a>
+    <a data-ng-href="{{eventDetailRoute}}" class="btn btn-primary">Return to event details</a>
+  </div>
+</form>
+
+<div ng-show="showFlashMessage()" class="alert-{{flashAlertStatus}} offset-top-10">
+  <h2>{{flashMessage}}</h2>
+</div>
+
+<div ng-show="!isLoggedIn()">
+  <h2>403 Forbidden</h4>
+  <a data-ng-href="/" class="btn btn-primary">To event list</a>
+  <a data-ng-href="/login" class="btn btn-primary">Login</a>
+</div>

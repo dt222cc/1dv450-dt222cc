@@ -1,4 +1,4 @@
-<h1 class="jumbotrone index-header">Information about the event</h1>
+<h1 class="jumbotrone index-header">Information about the event {{flashMessage}}</h1>
 <hr />
 
 <h3>Name</h3>
@@ -9,3 +9,8 @@
 <p>{{event.location}}</p>
 <h3>Tags</h3>
 <p>{{event.tags}}</p>
+
+<div ng-show="isOwner()">
+  <a data-ng-href="{{editRoute}}" class="btn btn-primary">Edit</a>
+  <a data-ng-href="{{deleteRoute}}" class="btn btn-primary">Delete</a>
+</div>

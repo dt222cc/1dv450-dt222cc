@@ -3,6 +3,13 @@
  */
 positioningApp.controller('DeleteResourceController', ['$scope', '$routeParams', '$location', 'EventService',
   function($scope, $routeParams, $location, EventService) {
+  // Must be logged in to be able to delete,
+  // authorization if able to delete happens on server side,
+  // which means that im not checking for "IS event creator"
+  // which should probably be done on the client side aswell.
+  if (sessionStorage.currentUser === undefined) {
+    $location.path('/login');
+  }
 
   $scope.flashMessage = '';
 
@@ -12,12 +19,6 @@ positioningApp.controller('DeleteResourceController', ['$scope', '$routeParams',
    */
   $scope.showFlashMessage = function() {
     return $scope.flashMessage !== '';
-  };
-
-  // For now anyone that is logged in can "try" to delete,
-  // should not pass the validation on server side
-  $scope.isLoggedIn = function() {
-    return sessionStorage.currentUser !== undefined;
   };
 
   /**
