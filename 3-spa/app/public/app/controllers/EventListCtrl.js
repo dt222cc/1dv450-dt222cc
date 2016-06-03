@@ -52,18 +52,25 @@ positioningApp.controller("EventListController", ['$scope', 'NgMap', 'EventServi
   $scope.isIdSearch =  function() {
     return $scope.radioModel.value == 'id';
   };
+  $scope.isOwner = function(event) {
+    if (sessionStorage.currentUser !== undefined) {
+      return JSON.parse(sessionStorage.currentUser).creator.email === event.creator.email;
+    } else {
+      return false;
+    }
+  };
 
   /**
    * Show the event on the map. Center, zoom, open info window(map only)
    * @param  {[type]} event [description]
    * @param  {[type]} e     [The actual event]
    */
-  $scope.showOnMap = function(event, e) {
+  $scope.showMarker = function(event, e) {
+    $scope.infoWindowTags = '';
+
     // New position and zoom
-    $scope.mapBox = {
-      center: [e.position.latitude, e.position.longitude],
-      zoom: 15,
-    };
+    $scope.map.setCenter({ lat: e.position.latitude, lng: e.position.longitude });
+    $scope.map.setZoom(15);
 
     // The selected marker's position and events
     $scope.selectedMarker = {
@@ -79,15 +86,21 @@ positioningApp.controller("EventListController", ['$scope', 'NgMap', 'EventServi
     });
 
     // Alter display of tags
-    $scope.infoWindowTags = 'Has no tags';
     if (e.tags.length > 0) {
       e.tags.forEach(function(tag) {
         $scope.infoWindowTags += tag.name + ', ';
       });
       $scope.infoWindowTags = $scope.infoWindowTags.slice(0, -2);
+    } else {
+      $scope.infoWindowTags = 'Has no tags';
     }
 
     $scope.map.showInfoWindow('eventInfo', this); // Open/show the Info Window
+  };
+
+  $scope.showMarkerOnMap = function(event, e) {
+    $scope.map.setCenter({ lat: e.position.latitude, lng: e.position.longitude });
+    $scope.map.setZoom(15);
   };
 
   /* Get all events */

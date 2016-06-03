@@ -72,7 +72,7 @@
         <marker
           ng-repeat="e in events.eventList | filter:filterText"
           position="[{{e.position.latitude}}, {{e.position.longitude}}]"
-          on-click="showOnMap(event, e)">
+          on-click="showMarker(event, e)">
         </marker>
         <!-- Flaw: Case of multiple events on the same location -->
         <info-window id="eventInfo">
@@ -103,7 +103,7 @@
         </tr>
       </thead>
       <tr ng-repeat="e in events.eventList | filter:filterText">
-        <td><a href="#" ng-click="showOnMap(event, e)"><i class="glyphicon glyphicon-map-marker"></i></a></td>
+        <td><a href="#" ng-click="showMarkerOnMap(event, e)"><i class="glyphicon glyphicon-map-marker"></i></a></td>
         <td><a data-ng-href="event/{{e.id}}">{{e.name}}</a></td>
         <td>{{e.description}}</td>
         <td><a data-ng-href="event/{{e.id}}/delete" ng-show="isOwner(e)"><i class="glyphicon glyphicon-remove"></i></a></td>

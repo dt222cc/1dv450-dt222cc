@@ -29,6 +29,18 @@ positioningApp.factory('ResourceService', function($http, API_CONSTANT) {
         params: params,
         data: obj // TODO: Double check if working as intended
       });
+    },
+    deleteCollection: function(collectionName, token) {
+      var params = Object.assign({ access_token: API_CONSTANT.key });
+      return $http({
+        method: 'DELETE',
+        url: API_CONSTANT.url + collectionName,
+        headers: {
+          'Accept': API_CONSTANT.format,
+          'Authorization': 'Basic ' + token
+        },
+        params: params
+      });
     }
     // ...
   };

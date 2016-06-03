@@ -18,6 +18,9 @@ positioningApp.factory('EventService', ['ResourceService', function(Resource) {
     },
     addEvent: function(event, token) {
       return Resource.postCollection('events', event, token);
+    },
+    deleteEvent: function(eventId, token) {
+      return Resource.deleteCollection('events/' + eventId, token);
     }
   };
 }]);

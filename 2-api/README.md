@@ -140,6 +140,8 @@ DELETE request against events can be done but only for authenticated creators.
 
 Also only able to delete the creators own events.
 
+Deletes positions and tags associated with the event also gets deleted if those resource only had that "one" link.
+
 ## Note
 
 I should probably have good error handling which handles many different scenarios. The consequence for that probably more cluttered code. We'll see if I can refactor it.
