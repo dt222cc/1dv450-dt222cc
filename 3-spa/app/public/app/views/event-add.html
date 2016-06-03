@@ -1,15 +1,16 @@
 <form name="newEventForm" class="col-md-12" required ng-init="clearMarkers()">
   <h2>Add an event</h2>
+  <p>Name, description and location is required. Tags is optional to add.</p>
   <div class="form-group">
     <label>Name:</label>
-    <input type="text" class="form-control" id="event-name" ng-model="eventName">
+    <input type="text" class="form-control" id="event-name" ng-model="eventName" placeholder="Event name">
   </div>
   <div class="form-group">
     <label>Description:</label>
-    <textarea class="form-control" rows="5" id="event-description" ng-model="eventDescription"></textarea>
+    <textarea class="form-control" rows="5" id="event-description" ng-model="eventDescription" placeholder="Event description"></textarea>
   </div>
   <div id="event-add-map">
-    <label>Location: <small>(Press enter/search a second time if it did not register on the map)</small></label>
+    <label>Location: <small>(Press enter/search a second time if the marker did not register on the map)</small></label>
     <div class="input-group">
       <input type="text" class="form-control"
       placeholder="Enter an address" ng-model="eventAddress" code="13" my-key-press="showLocation()"
