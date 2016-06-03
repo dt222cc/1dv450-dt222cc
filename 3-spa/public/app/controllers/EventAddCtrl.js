@@ -85,24 +85,13 @@ function($scope, $location, EventService, TagService, NgMap) {
 
   /* On submit, compile into an event object ... */
   $scope.submit = function() {
-    var confirmMessage   = '';
-    var tagsInString     = '';
+    // Formatting tags
     var formattedTagList = [];
-
-    // Process tags
     vm.eventTags.forEach(function(tag) {
       formattedTagList.push({ name: tag.name });
-      tagsInString += tag.name + ', ';
     });
 
-    // Further processing of tags
-    if (tagsInString !== undefined) {
-      tagsInString = tagsInString.slice(0, -2);
-    } else {
-      tagsInString = '"No tags added"';
-    }
-
-  // The event object to be sent for creation
+    // Format event object
     var event = {
       name: $scope.eventName,
       description: $scope.eventDescription,
@@ -112,24 +101,17 @@ function($scope, $location, EventService, TagService, NgMap) {
       tags: formattedTagList
     };
 
-    // A confirm message for the confirmation window, (needs improvements)
-    // also used for reviewing event before the final submission
-    confirmMessage = 'Are you sure you want to create this event?\n\nEvent name: ' +
-      event.name + '\nEvent description: ' + event.description + '\nLocation: ' +
-      event.position.address_city + '\nTags: ' + tagsInString;
+    var token = JSON.parse(sessionStorage.currentUser).token;
 
-    if (confirm(confirmMessage)) {
-      var token = JSON.parse(sessionStorage.currentUser).token;
-      EventService.addEvent({event: event}, token).success(function(data) {
-        $location.path('/');
-        // Needs confirmation of event creation, flash message
-      }).error(function(error, data) {
-        // Needs more testing and error message handling
-        console.log('Failed to create the event.');
-        console.log(error);
-        console.log(data);
-      });
-    }
+    EventService.addEvent({event: event}, token).success(function(data) {
+      $location.path('/');
+      // Needs confirmation of event creation, flash message
+    }).error(function(err, status) {
+      // Needs more testing and error message handling
+      console.log('Failed to create the event.');
+      console.log(err);
+      console.log(status);
+    });
   };
 
   /**
