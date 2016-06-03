@@ -14,7 +14,6 @@ var app = module.exports = express();
 /**
  * Configuration
  */
-
 // All environments
 app.set('port', process.env.PORT || 3000);
 app.use(morgan('dev'));
@@ -33,14 +32,11 @@ if (env === 'development') {
 }
 
 // Production only
-if (env === 'production') {
-  // TODO
-}
+if (env === 'production') {}
 
 /**
  * Routes
  */
-
 // Serve index and view partials
 app.get('/', function(req, res) {
   res.sendfile(__dirname + '/index.html');
@@ -54,7 +50,6 @@ app.get('*', function(req, res) {
 /**
  * Start Server
  */
-
 http.createServer(app).listen(app.get('port'), function () {
   console.log('Express server listening on port ' + app.get('port'));
   console.log('URL: localhost:' + app.get('port'));

@@ -6,11 +6,11 @@
 ## Part 3 of 3
 A client application written in AngularJS which uses asynchronous calls against the prior written API.
 
-## Pre-requirements for this app
+## Pre-requirements: API
 
-Setup and run the API from previous step, with Cloud9:
+Setup and run the API from the part 2, with for example Cloud9:
 
-Login/signup then create a new workspace, from git:
+Login/signup then create a new workspace:
 ```
 https://github.com/dt222cc/1dv450-dt222cc.git
 ```
@@ -29,25 +29,17 @@ $ rake db:setup
 $ rails server -p $PORT -b $IP
 ```
 
-## Initial setup for the single page application
+## The Single Page Application
 
-One way of doing this is by cloning the repository, navigate to `3-spa` and open a console window.
-
-Run `npm install` to grab the dependencies, steps for setting up `node.js` might be necessary if this step does not work.
-
-## Running the app
+App is not available online/live. One way of doing this is by cloning the repository to your system and have it run there.
 
 Runs like a typical express app:
 
-    node app.js
-
-Open a web-browser, URL is `localhost:3000`.
+Navigate to `3-spa` and open a console window, run `npm install` to grab the dependencies, steps for setting up `npm & node.js` might be necessary if this step does not work. run `node app.js` to boot server up. Open a web-browser, URL is `localhost:3000`.
 
 ## Extra
 
-If no events are being displayed, check the URL used (3-spa/app/public/app/app.js) and check if the API is working.
-
-Does not handle places with the same name.
+If no events are being displayed, check the URL used (3-spa/app/public/app/app.js) and check if the API is working as indended.
 
 ## Credentials
 
@@ -56,3 +48,15 @@ Password: userone
 
 Email:    user@two.se
 Password: usertwo
+
+## Changes made to the API
+
+I updated the position to geocode with address_city instead of JUST latitude and longitude.
+
+I added/updated something with CORS. Issue with accessing the API from localhost.
+
+I did some fixes with event deletion where the associated resources connected to it was not properly destroyed because of order of destruction, where I destroyed the resource "before" the linked resources which led to a system failure and messed up other functionality like receiving the events for display (Status 500).
+
+I updated some minor stuff regarding the response for events/event. The serialization: always return an array instead of just one single object if only 1 event was found, this to handle the response a bit easier.
+
+So the main changes was geocoding and CORS.
