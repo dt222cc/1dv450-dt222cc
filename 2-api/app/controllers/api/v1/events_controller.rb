@@ -130,11 +130,11 @@ class Api::V1::EventsController < Api::V1::ApiController
       if event.nil?
         render json: { error: 'Forbidden, you are not the owner of this resource.' }, status: :forbidden
       else
-        event.destroy
-        event.position.destroy if event.position.events.size <= 1
+        event.position.destroy if event.position.events.length <= 1
         event.tags.each do |tag|
           tag.destroy if tag.events.size <= 1
         end
+        event.destroy
         head :no_content # Return status no_content on successful delete/destroy
       end
     end
