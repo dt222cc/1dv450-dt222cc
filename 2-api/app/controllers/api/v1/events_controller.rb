@@ -201,14 +201,12 @@ class Api::V1::EventsController < Api::V1::ApiController
   def event_param_error_response
     return {
       error: 'Parse error: check spelling, etc. Example:',
-      body: {
-        event: {
-          name: 'string, required',
-          description: 'string, required',
-          position: { address_city: 'string, required'},
-          tags: [ { name: 'optional' }, { name: 'optional' } ]
-        }
-      },
+      event: {
+        name: 'string, required',
+        description: 'string, required',
+        position: { address_city: 'string, required'},
+        tags: [ { name: 'tags is optional' }, { name: 'this property can be omitted' } ]
+      }
     }
   end
 
