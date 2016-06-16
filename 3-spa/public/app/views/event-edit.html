@@ -3,12 +3,14 @@
   <p>On successful update you will be redirected to the event details of this event.</p>
   <p>Current event details(name & description) is also shown as placeholder.</p>
   <div class="form-group">
-    <label>Name:</label>
-    <input type="text" class="form-control" id="event-name" ng-model="eventName" placeholder="{{currentEvent.name}}">
+    <label for="event-name">Name:</label>
+    <input type="text" class="form-control" id="event-name"
+    ng-model="eventName" placeholder="{{currentEvent.name}}">
   </div>
   <div class="form-group">
-    <label>Description:</label>
-    <textarea class="form-control" rows="5" id="event-description" ng-model="eventDescription" placeholder="{{currentEvent.description}}"></textarea>
+    <label for="event-description">Description:</label>
+    <textarea class="form-control" rows="5" id="event-description"
+    ng-model="eventDescription" placeholder="{{currentEvent.description}}"></textarea>
   </div>
   <div class="row offset-top-10" ng-show="add_event.eventTags.length !== 0">
     <div class="col-lg-6">
@@ -32,9 +34,9 @@
   </div>
   <div class="row">
     <div class="col-lg-6">
-      <label>Add new tag:</label>
+      <label for="event-new-tag">Add new tag:</label>
       <div class="input-group">
-        <input type="text" class="form-control"
+        <input type="text" class="form-control" id="event-new-tag"
         placeholder="Tag name.." ng-model="newTag" code="13" my-key-press="addNewTag()">
         <span class="input-group-btn">
           <button class="btn btn-default" type="button" ng-click="addNewTag()">Add</button>
