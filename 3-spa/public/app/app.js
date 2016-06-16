@@ -9,6 +9,24 @@ positioningApp.constant('API_CONSTANT', {
   'format': 'application/json'
 });
 
+positioningApp.run(function($rootScope, $timeout, LoginService) {
+  var timer;
+
+  $rootScope.setMessage = function(object) {
+    $rootScope.flashMessage = object;
+    $timeout.cancel(timer);
+    timer = $timeout($rootScope.hideMessage, 10000);
+  };
+
+  $rootScope.hideMessage = function() {
+    $rootScope.setMessage({ message: false, type: 'success' });
+  };
+
+  $rootScope.isLoggedIn = function() {
+    return LoginService.isLoggedIn() !== undefined;
+  };
+});
+
 positioningApp.config(['$routeProvider', '$locationProvider', function($routeProvider, $locationProvider) {
   $routeProvider.
     when('/', {

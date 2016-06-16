@@ -1,3 +1,7 @@
+<div class="message" role="alert" ng-if="flashMessage.message" ng-click="hideMessage()">
+  <h4 class="alert-{{flashMessage.type}}">{{flashMessage.message}}</h4>
+</div>
+
 <h1 class="index-header login-header">LOGIN</h1>
 <div class="form-content">
   <form name="form" ng-submit="login()" ng-controller="LoginController" class="bottom-30">

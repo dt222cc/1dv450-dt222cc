@@ -1,3 +1,7 @@
+<div class="message" role="alert" ng-if="flashMessage.message" ng-click="hideMessage()">
+  <h4 class="alert-{{flashMessage.type}}">{{flashMessage.message}}</h4>
+</div>
+
 <form name="newEventForm" class="col-md-12" required ng-init="clearMarkers()">
   <h2>Add an event</h2>
   <p>Name, description and location is required. Tags is optional to add.</p>

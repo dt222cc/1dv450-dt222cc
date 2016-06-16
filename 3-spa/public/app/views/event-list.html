@@ -1,5 +1,8 @@
 <div id="events-container">
-  <!-- <h1 class="jumbotrone index-header">...</h1> -->
+  <div class="message" role="alert" ng-if="flashMessage.message" ng-click="hideMessage()">
+    <h4 class="alert-{{flashMessage.type}}">{{flashMessage.message}}</h4>
+  </div>
+
   <div id="search-options">
     <h2>Options</h2>
     <div id="search-type" class="row">

@@ -1,11 +1,15 @@
 /**
  *
  */
-positioningApp.controller("EventAddController", ['$scope', '$location', 'EventService', 'TagService', 'NgMap',
-function($scope, $location, EventService, TagService, NgMap) {
+positioningApp.controller("EventAddController", ['$scope', '$location', 'EventService', 'TagService', 'NgMap', '$rootScope',
+function($scope, $location, EventService, TagService, NgMap, $rootScope) {
   // Redirect to login page if not logged in
   if (sessionStorage.currentUser === undefined) {
     $location.path('/login');
+    $rootScope.setMessage({
+      message: 'You have to be logged in to add an event.',
+      type: 'info'
+    });
   }
 
   var vm = this;
@@ -105,12 +109,19 @@ function($scope, $location, EventService, TagService, NgMap) {
 
     EventService.addEvent({event: event}, token).success(function(data) {
       $location.path('/');
-      // Needs confirmation of event creation, flash message
+      $rootScope.setMessage({
+        message: 'The event was sucessfully added to the list.',
+        type: 'success'
+      });
     }).error(function(err, status) {
-      // Needs more testing and error message handling
       console.log('Failed to create the event.');
       console.log(err);
       console.log(status);
+
+      $rootScope.setMessage({
+        message: 'Failed to create the event.',
+        type: 'danger'
+      });
     });
   };
 

@@ -1,7 +1,8 @@
 /**
  * Login Controller: Authenticates user
  */
-positioningApp.controller('LoginController', ['$scope', '$location', 'LoginService', function($scope, $location, LoginService) {
+positioningApp.controller('LoginController', ['$scope', '$location', 'LoginService', '$rootScope',
+  function($scope, $location, LoginService, $rootScope) {
   // Disable login if already logged in, redirect to '/'
   if (sessionStorage.currentUser !== undefined) {
     $location.path('/'); // Perhaps include a flash message
@@ -12,17 +13,35 @@ positioningApp.controller('LoginController', ['$scope', '$location', 'LoginServi
   // then try to do a POST for authentication check
   // Checks for status 403 (forbidden) and 422 (authorized but invalid event data)
   // If status code is 422 get user details and set as logged in
+  // For future iterations, the solution should be changed for something like JWT.
   $scope.login = function() {
     var token = btoa($scope.email + ":" + $scope.password);
     LoginService.authenticateUser({}, token).success(function(data) {
       // There is no success path because of intentional invalid object, "{}"
     }).error(function(err, status) {
-      if (status !== 403) {
-        if (status === 422) { // Passed 403 and is 422 === Correct credentials
-          setCurrentUser($scope.email, token);
-        }
+      if (status === 422) {
+        // Passed 403 and is 422 === Correct credentials but unable to create the fake event (ful-hack)
+        setCurrentUser($scope.email, token);
+
+        $rootScope.setMessage({
+          message: 'Welcome! You was successfully logged in.',
+          type: 'success'
+        });
+      } else if (status === 403) {
+        $rootScope.setMessage({
+          message: 'Incorrect login.',
+          type: 'danger'
+        });
+      } else if (status === 503) {
+        $rootScope.setMessage({
+          message: 'The service is down, please try again later.',
+          type: 'warning'
+        });
       } else {
-        console.log('Forbidden, works as intended. TODO: Error/Flash Message');
+        $rootScope.setMessage({
+          message: 'An unexpected error has occured!',
+          type: 'danger'
+        });
       }
     });
   };
